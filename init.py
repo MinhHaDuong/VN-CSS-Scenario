@@ -40,6 +40,15 @@ from functools import lru_cache
 import pandas as pd
 import numpy as np
 
+#This is overkill. Would be better to find the exact offending line and reenable warnings
+#Disable the spurious message:
+# FutureWarning: The pandas.core.datetools module is deprecated
+#https://stackoverflow.com/questions/14463277/how-to-disable-python-warnings
+#https://github.com/statsmodels/statsmodels/issues/3814
+#Should be fixed in statsmodels version 0.9
+#
+np.warnings.filterwarnings("ignore")
+
 pd.set_option('display.max_rows', 100)
 pd.set_option('display.max_columns', 20)
 pd.set_option('display.width', 1000)
