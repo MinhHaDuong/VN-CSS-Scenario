@@ -7,7 +7,7 @@
 
 PYTHON = python3
 COVERAGE = python3-coverage
-
+PYTEST = py.test-3
 
 tables = table-parameters.fwf table-comparison.fwf table-price-run.fwf table-past-data.fwf table-LCOE-prices.fwf
 
@@ -42,17 +42,17 @@ table-LCOE-prices.fwf: price_LCOE_run.txt
 	$(PYTHON) $< plot $@
 
 test: cleaner
-	py.test --doctest-modules
+	$(PYTEST) --doctest-modules
 
 coverage: coverage.xml
 	$(COVERAGE) html
 	see htmlcov/index.html
 
 coverage.xml:
-	py.test --doctest-modules --cov=. --cov-report term-missing --cov-report xml
+	$(PYTEST) --doctest-modules --cov=. --cov-report term-missing --cov-report xml
 
 regtest-reset:
-	py.test --regtest-reset
+	$(PYTEST) --regtest-reset
 
 lint:
 	pylint3 *py
