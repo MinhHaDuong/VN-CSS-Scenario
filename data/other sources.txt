@@ -1,0 +1,17 @@
+More data sources:
+
+GreenID Markal scenarios report "Analysis of future generation capacity scenarios for Vietnam", Oktober 18, 2017
+Fuel costs presented in Table 8 are taken from the Institute of Energy in its revised
+report of the PDP VII.
+Table 8: Fuel costs
+Unit 2015 2020 2025 2030
+Domestic coala USD/ton 60.3 63.6 67.2 70.9
+Import coalb USD/ton 88.1 93.1 98.5 104.1
+FO USD/ton 548.6 690.5 948.1 1,121.7
+DO USD/ton 878.3 1,122.7 1,554.7 1,567.7
+Natural gas USD/Mill BTU 6.1 8.1 10.9 10.9
+LNG USD/Mill BTU 12.6 14.8 14.8 14.8
+
+The Vietnam Calculator 2050 (Khanh)
+
+DANIDA Balmorel study
