@@ -76,7 +76,7 @@ def test_local_dependency():
 def test_between_two_values():
     """Check that the average price value is between the local value and the international value"""
     fuel_1 = Fuel_Price(local_prices, price_gas, price_coal, local_production, baseline)
-    assert pd.concat([fuel_1.international_prices["Gas"], local_prices["Gas"]], axis=1)\
+    assert pd.concat([fuel_1.import_prices["Gas"], local_prices["Gas"]], axis=1)\
     .min(axis=1).all() <= fuel_1.average_price["Gas"].all()
-    assert fuel_1.average_price["Gas"].all() <= pd.concat([fuel_1.international_prices["Gas"],
+    assert fuel_1.average_price["Gas"].all() <= pd.concat([fuel_1.import_prices["Gas"],
                                local_prices["Gas"]], axis=1).max(axis=1).all()

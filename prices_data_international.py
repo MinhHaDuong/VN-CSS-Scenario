@@ -40,17 +40,17 @@ for_values = end_year - start_year +1
 
 
 #Collect of data
-international_prices_data = pd.read_csv(international_past_data["path_data"], index_col=0)
+import_prices_data = pd.read_csv(international_past_data["path_data"], index_col=0)
 
-international_prices_data.columns = ["Gas", "Coal"]
+import_prices_data.columns = ["Gas", "Coal"]
 
-x = np.array(international_prices_data.index)
-y_coal = np.array(international_prices_data.Coal) / (calorific_power["Coal_international"] * t)
-y_gas = np.array(international_prices_data.Gas) / MBtu
+x = np.array(import_prices_data.index)
+y_coal = np.array(import_prices_data.Coal) / (calorific_power["Coal_international"] * t)
+y_gas = np.array(import_prices_data.Gas) / MBtu
 
-price_gas = pd.DataFrame({'Price_Gas': international_prices_data['Gas']})\
+price_gas = pd.DataFrame({'Price_Gas': import_prices_data['Gas']})\
             .loc[international_past_data["ini_year_Gas"]:2016] / (MBtu)
-price_coal = pd.DataFrame({'Price_Coal': international_prices_data['Coal']})\
+price_coal = pd.DataFrame({'Price_Coal': import_prices_data['Coal']})\
             .loc[international_past_data["ini_year_Coal"]:2016]\
 /(calorific_power["Coal_international"] * t)
 coal = []
@@ -85,7 +85,7 @@ def log_returns(data):
     stdev = log_ret.std()
     return drift.values[0], stdev.values[0]
 
-class international_prices_path():
+class import_prices_path():
     """ An international prices forecast, based on historical data and geometric brownian
     movement"""
 
@@ -94,7 +94,7 @@ class international_prices_path():
         self.past_coal = past_coal
         self.coef_cor = self.realized_pairwise_correlation()
         self.forecast_price = self.price_path()
-        self.international_prices = pd.DataFrame({'Coal': self.forecast_price[1],
+        self.import_prices = pd.DataFrame({'Coal': self.forecast_price[1],
                                       'Gas': self.forecast_price[0]},
         index=range(start_year, end_year+1))
 
@@ -167,4 +167,4 @@ if __name__ == '__main__':
               ***   Past data characteristics   ***
               ******************************************
               """)
-        international_prices_path(price_gas, price_coal).summarize()
+        import_prices_path(price_gas, price_coal).summarize()
