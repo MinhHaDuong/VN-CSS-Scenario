@@ -4,10 +4,10 @@ Created on Mon Feb 12 22:37:31 2018
 
 @author: Alice Duval
 
-Define the alternative baseline power plan, from the baseline plan. 
+Define the alternative baseline power plan, from the baseline plan.
 
-In this scenario, each year, the same electricity capacity is added from coal and from gas. 
-Additional capacities per year are the same than in the baseline scenario. 
+In this scenario, each year, the same electricity capacity is added from coal and from gas.
+Additional capacities per year are the same than in the baseline scenario.
 
 Less coal plants and more gas plants are built. As the life time of a gas plant (25 years) is
 shorter than the life time of a coal plant (40 years), the amount of energy produced for the
@@ -22,12 +22,16 @@ from init import fuels, addcol_Renewable4
 
 from data_past import capacity_past, production_past, capacity_factor_past, capacity_2015_EVN
 
-from data_alternative import (PDP7A_annex1, capacities_PDP7A, capacity_total_plan, production_PDP7A,
-                        capacity_factor_PDP7A)
+from data_alternative import (PDP7A_annex1,
+                              capacities_PDP7A,
+                              capacity_total_plan,
+                              production_PDP7A,
+                              capacity_factor_PDP7A)
 
 from PowerPlan import PowerPlan
 
 #%%
+
 
 #print(PDP7A_annex1)
 def fill_in(serie):

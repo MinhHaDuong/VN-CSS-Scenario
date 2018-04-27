@@ -46,11 +46,10 @@ class Fuel_Price():
 
     def needed_energy(self):
         """Get how much energy from gas and coal is needed for the scenario."""
-        electric_production = self.scenario.production[['Coal', 'Gas']].loc[start_year:end_year + 1]
+        electric_energy = self.scenario.production[['Coal', 'Gas']].loc[start_year:end_year + 1]
         useful_heat_rate = heat_rate[['Coal', 'Gas']]
-
         needed_production = pd.DataFrame(
-            electric_production.values * useful_heat_rate.values,
+            electric_energy.values * useful_heat_rate.values,
             columns=useful_heat_rate.columns,
             index=useful_heat_rate.index)
         needed_production["Coal"] = needed_production["Coal"] * MBtu
@@ -58,7 +57,7 @@ class Fuel_Price():
         return needed_production
 
     def importation(self):
-        """Calculate commodities quantities that have to be imported for the electric system."""
+        """Calculate fuel quantities that have to be imported for the electric system."""
         importation = pd.DataFrame(columns=['Coal', 'Gas'], index=self.index)
         importation["Coal"] = self.needed_production["Coal"] - self.loc_production["Coal"]
         importation["Gas"] = self.needed_production["Gas"] - self.loc_production["Gas"]
@@ -74,15 +73,15 @@ class Fuel_Price():
         average_price['Coal'] = np.where(
             self.needed_importation['Coal'] == 0,
             self.loc_prices['Coal'],
-            (self.loc_production['Coal'] *
-             self.loc_prices['Coal'] + self.needed_importation['Coal'] *
-             self.import_prices['Coal']) / (self.needed_production['Coal']))
+            (self.loc_production['Coal'] * self.loc_prices['Coal'] +
+             self.needed_importation['Coal'] * self.import_prices['Coal']) /
+            (self.needed_production['Coal']))
         average_price['Gas'] = np.where(
             self.needed_importation['Gas'] == 0,
             self.loc_prices['Gas'],
-            (self.loc_production['Gas'] *
-             self.loc_prices['Gas'] + self.needed_importation['Gas'] *
-             self.import_prices['Gas']) / (self.needed_production['Gas']))
+            (self.loc_production['Gas'] * self.loc_prices['Gas'] +
+             self.needed_importation['Gas'] * self.import_prices['Gas']) /
+            (self.needed_production['Gas']))
         return average_price
 
     def generate_parameters(self):
@@ -171,23 +170,25 @@ class Fuel_Price():
         """Summary of Coal and Gas supply and prices."""
         milestones = [start_year, 2020, 2025, 2030, 2040, 2050]
 
-        supply_coal = pd.DataFrame({'Coal imported': self.needed_importation['Coal'] / (10**8 * MBtu),
-                                    'Coal locally produced': self.loc_production['Coal'] /
-                                    (10**8 * MBtu),
-                                    'Coal needs': self.needed_production['Coal'] / (10**8 * MBtu)})
+        supply_coal = pd.DataFrame({
+            'Coal imported': self.needed_importation['Coal'] / (10**8 * MBtu),
+            'Coal locally produced': self.loc_production['Coal'] / (10**8 * MBtu),
+            'Coal needs': self.needed_production['Coal'] / (10**8 * MBtu)})
 
-        prices_coal = pd.DataFrame({'Average coal price': self.average_price['Coal'] * MBtu,
-                                    'Local coal price': self.loc_prices['Coal'] * MBtu,
-                                    'Imported coal price': self.import_prices["Coal"] * MBtu})
+        prices_coal = pd.DataFrame({
+            'Average coal price': self.average_price['Coal'] * MBtu,
+            'Local coal price': self.loc_prices['Coal'] * MBtu,
+            'Imported coal price': self.import_prices["Coal"] * MBtu})
 
-        supply_gas = pd.DataFrame({'Gas needs': self.needed_production['Gas'] / (10**8 * MBtu),
-                                   'Gas locally produced': self.loc_production['Gas'] /
-                                   (10**8 * MBtu),
-                                   'Gas imported': self.needed_importation['Gas'] / (10**8 * MBtu)})
+        supply_gas = pd.DataFrame({
+            'Gas needs': self.needed_production['Gas'] / (10**8 * MBtu),
+            'Gas locally produced': self.loc_production['Gas'] / (10**8 * MBtu),
+            'Gas imported': self.needed_importation['Gas'] / (10**8 * MBtu)})
 
-        prices_gas = pd.DataFrame({'Average gas price': self.average_price['Gas'] * MBtu,
-                                   'Local gas price': self.loc_prices['Gas'] * MBtu,
-                                   'Imported gas price': self.import_prices["Gas"] * MBtu})
+        prices_gas = pd.DataFrame({
+            'Average gas price': self.average_price['Gas'] * MBtu,
+            'Local gas price': self.loc_prices['Gas'] * MBtu,
+            'Imported gas price': self.import_prices["Gas"] * MBtu})
 
         return (
             "\n Coal and Gas origin and prices for " + str(self.scenario) + '\n\n'

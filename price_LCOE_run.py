@@ -8,7 +8,7 @@ Multiple Run to calculate LCOE for different international prices trajectories
 """
 
 import sys
-import numpy as  np
+import numpy as np
 import matplotlib.pyplot as plt
 
 from plan_baseline import baseline
@@ -20,6 +20,7 @@ from production_data_local import local_production
 
 
 from Run import Run
+
 
 class multiple_LCOE():
     """
@@ -33,8 +34,12 @@ class multiple_LCOE():
 
     def one_run(self):
         """Generate parameters and run the model with these newly defined parameters"""
-        reference = \
-        Fuel_Price(local_prices, price_gas, price_coal, local_production, baseline).parameters
+        reference = Fuel_Price(
+            local_prices,
+            price_gas,
+            price_coal,
+            local_production,
+            baseline).parameters
         run_model = Run(self.scenario, reference)
         return run_model.lcoe
 
@@ -44,7 +49,7 @@ class multiple_LCOE():
         lcoe_list = []
         for i in range(self.number_run):
             np.random.seed(i)
-            lcoe_list.append(self.one_run()*100)
+            lcoe_list.append(self.one_run() * 100)
         lcoe_list.sort(reverse=True)
         return lcoe_list
 
@@ -62,6 +67,7 @@ class multiple_LCOE():
                 " Median value : " + str(round(median_value, 2)) + "\n" +
                 " 95 percentile value : " + str(round(perc_value, 2))
                 )
+
     def summarize(self):
         """Print object's summary."""
         print(self.summary())
@@ -70,14 +76,15 @@ class multiple_LCOE():
         """Plot generated LCOE"""
         lcoe = self.multiple_run()
         fig = plt.figure()
-        fig.suptitle('LCOE for '+ str(self.number_run) +
-                     ' gas and coal international prices forecasts in\n'+ str(self.scenario))
+        fig.suptitle('LCOE for ' + str(self.number_run) +
+                     ' gas and coal international prices forecasts in\n' + str(self.scenario))
         ax = fig.add_subplot(111)
         ax.bar(np.arange(len(lcoe)), lcoe, width=1)
         ax.set_ylabel('LCOE in US cent / kWh')
         ax.set_xticks([])
         ax.set_ylim([0, 10.5])
         fig.savefig(filename)
+
 
 if __name__ == '__main__':
     if (len(sys.argv) == 2) and (sys.argv[1] == "summarize"):
@@ -89,4 +96,3 @@ if __name__ == '__main__':
     if (len(sys.argv) == 3) and (sys.argv[1] == "plot"):
         LCOE_list = multiple_LCOE(baseline, 100)
         LCOE_list.plot(sys.argv[2])
-            

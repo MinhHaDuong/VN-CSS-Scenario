@@ -149,10 +149,10 @@ capacityfactor = capacityfactor.where(capacityfactor < 1)
 
 net_import = extend("Import", 7000, "Import", production_past, production_PDP7A)
 
-#%% 
+#%%
 
-average_additions = (additions["Coal"] + additions["Gas"])/2
-average_retirement = (retirement["Coal"] + retirement["Gas"])/2
+average_additions = (additions["Coal"] + additions["Gas"]) / 2
+average_retirement = (retirement["Coal"] + retirement["Gas"]) / 2
 
 additions["Coal"] = average_additions
 additions["Gas"] = average_additions

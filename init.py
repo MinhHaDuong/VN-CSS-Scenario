@@ -151,4 +151,3 @@ calorific_power["Gas_local"] = 35700
 #        print(f.__name__, 'took', end - start, 'time')
 #        return result
 #    return f_timer
-
