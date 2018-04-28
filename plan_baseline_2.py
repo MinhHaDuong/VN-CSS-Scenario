@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-"""
+"""Define a Vietnam power development plan with generating as much from gas as from coal.
+
 Created on Tue Feb 13 22:12:01 2018
 
 @author: Alice Duval

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-"""
+"""Test the functions determining coal and gas prices.
+
 Created on Sat Feb 10 22:18:16 2018
 
 @author: Alice Duval
@@ -18,7 +19,7 @@ from init import pd, start_year, end_year
 
 def test_international_dependency():
     """Check that if all the production is imported, the average price is equal to the
-    international price"""
+    international price."""
 
     # Local production is null
     production = [0] * (end_year + 1 - start_year)
@@ -51,7 +52,7 @@ def test_international_dependency():
 
 def test_local_dependency():
     """Check that if all the production is local, the average price is equal to the
-    local price"""
+    local price."""
     # Local production is equal to energy needs. There is no importation
     electric_production = baseline.production[['Coal', 'Gas']].loc[start_year:end_year + 1]
     useful_heat_rate = heat_rate[['Coal', 'Gas']]

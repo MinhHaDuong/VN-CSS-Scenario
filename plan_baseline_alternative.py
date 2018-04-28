@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-"""
+"""Define a Vietnam power development plan with installing as much new gas as new coal capacity.
+
 Created on Mon Feb 12 22:37:31 2018
 
 @author: Alice Duval

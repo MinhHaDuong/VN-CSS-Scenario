@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-"""
+"""Simulate price trajectory for imported coal and gas, based on historical trend and correlation.
+
 Created on Mon Jan  8 11:44:08 2018
 
 @author: Alice Duval
@@ -77,12 +78,12 @@ def average_coeff(sequence):
 
 
 def random():
-    "Generate random number for N(0,1) distribution"
+    "Generate random number for N(0,1) distribution."
     return norm.ppf(np.random.rand(for_values, 1))
 
 
 def log_returns(data):
-    "Calculate the log return of a time serie"
+    "Calculate the log return of a time serie."
     log_ret = np.log(1 + data.pct_change()).loc[1978:2016]
     u = log_ret.mean()
     var = log_ret.var()
@@ -93,7 +94,7 @@ def log_returns(data):
 
 class import_prices_path():
     """ An international prices forecast, based on historical data and geometric brownian
-    movement"""
+    movement."""
 
     def __init__(self, past_gas, past_coal):
         self.past_gas = past_gas
@@ -106,7 +107,7 @@ class import_prices_path():
             index=range(start_year, end_year + 1))
 
     def realized_pairwise_correlation(self):
-        "Calculate the correlation factor of past data"
+        "Calculate the correlation factor of past data."
         c_coal = [c[0] for c in np.array(self.past_coal)[7:]]
         c_gas = [g[0] for g in np.array(self.past_gas)]
         x_gas = x_function(c_gas)
@@ -127,12 +128,14 @@ class import_prices_path():
         return coef_cor
 
     def price_path(self):
-        "Generate two correlated prices paths"
+        "Generate two correlated prices paths."
         b = [random(), random()]
         drift = [log_returns(self.past_gas)[0], log_returns(self.past_coal)[0]]
         stdev = [log_returns(self.past_gas)[1], log_returns(self.past_coal)[1]]
-        yearly_returns = [np.exp(drift[0] + stdev[0] * b[0]), np.exp(drift[1] + stdev[1] *
-                          (self.coef_cor * b[0] + np.sqrt(1 - self.coef_cor**2) * b[1]))]
+        yearly_returns = [np.exp(drift[0] + stdev[0] * b[0]),
+                          np.exp(drift[1] + stdev[1] * (
+                              self.coef_cor * b[0] +
+                              np.sqrt(1 - self.coef_cor**2) * b[1]))]
 
         price_list = [np.zeros_like(yearly_returns)[0], np.zeros_like(yearly_returns)[1]]
         last_price = [self.past_gas.iloc[-1], self.past_coal.iloc[-1]]

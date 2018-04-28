@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-"""
+"""Plot gas and coal prices used in the computations.
+
 Created on Mon Feb 12 10:14:30 2018
 
 @author: Alice Duval
@@ -18,27 +19,21 @@ from init import MBtu
 
 
 def plot_average_prices(name, source, ax, num_forecasts):
-    """Plot local prices and first international prices trajectories used in the model"""
+    """Plot local prices and first international prices trajectories used in the model."""
     np.random.seed(0)
     ax.plot(
         np.arange(2017 - len(source), 2017),
         source,
-        linewidth=2.0,
-        color='r',
-        label='International past prices')
+        linewidth=2.0, color='r', label='International past prices')
     ax.plot(
         np.arange(2016, 2050),
         local_prices[name].loc[2017:2050] * MBtu,
-        linewidth=2.0,
-        color='b',
-        label='Local prices (Khanh N., 2017)')
+        linewidth=2.0, color='b', label='Local prices (Khanh N., 2017)')
     import_prices = import_prices_path(price_gas, price_coal).import_prices[name]
     ax.plot(
         np.arange(2015, 2050),
         import_prices * MBtu,
-        color='grey',
-        label='International prices forcasts',
-        linewidth=1.0)
+        linewidth=1.0, color='grey', label='International prices forcasts')
     ax.set_xlabel("Year")
     ax.set_ylabel("2010 USD / MBtu")
     ax.legend(loc='upper left')

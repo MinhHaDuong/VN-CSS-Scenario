@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-"""
+"""Initialize local coal and gas prices time series.
+
 Created on Fri Dec 15 14:46:03 2017
 
 @author: Alice Duval

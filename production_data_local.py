@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
-"""
+"""Initialize local coal and gas production time series.
+
 Created on Mon Jan  8 11:31:01 2018
 
 @author: Alice Duval
 
 Productions are in 1000t for Coal and in Million M3 for Gas.
-
 """
 
 import numpy as np
