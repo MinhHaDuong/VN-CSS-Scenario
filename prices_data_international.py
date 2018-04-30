@@ -52,9 +52,11 @@ y_gas = np.array(import_prices_data.Gas) / MBtu
 price_gas = pd.DataFrame({
     'Price_Gas': import_prices_data['Gas']}).loc[
     international_past_data["ini_year_Gas"]:2016] / (MBtu)
+
 price_coal = pd.DataFrame({
     'Price_Coal': import_prices_data['Coal']}).loc[
     international_past_data["ini_year_Coal"]:2016] / (calorific_power["Coal_international"] * t)
+
 coal = []
 gas = []
 for j in range(len(price_coal)):
@@ -64,7 +66,7 @@ for j in range(len(price_gas)):
 
 
 def x_function(prices):
-    "Define a sequence used in correlation factor calculation."
+    """Define a sequence used in correlation factor calculation."""
     x_list = []
     for i, n in enumerate(prices):
         if i < len(prices) - 1:
@@ -73,17 +75,17 @@ def x_function(prices):
 
 
 def average_coeff(sequence):
-    "Calculate the average of a sequence."
+    """Calculate the average of a sequence."""
     return 1 / len(sequence) * np.sum(sequence)
 
 
 def random():
-    "Generate random number for N(0,1) distribution."
+    """Generate random number for N(0,1) distribution."""
     return norm.ppf(np.random.rand(for_values, 1))
 
 
 def log_returns(data):
-    "Calculate the log return of a time serie."
+    """Calculate the log return of a time serie."""
     log_ret = np.log(1 + data.pct_change()).loc[1978:2016]
     u = log_ret.mean()
     var = log_ret.var()
@@ -93,8 +95,10 @@ def log_returns(data):
 
 
 class import_prices_path():
-    """ An international prices forecast, based on historical data and geometric brownian
-    movement."""
+    """A future trajectory of international oil and gas prices.
+
+    Based on historical data and a correlated geometric brownian movement model.
+    """
 
     def __init__(self, past_gas, past_coal):
         self.past_gas = past_gas
@@ -107,7 +111,7 @@ class import_prices_path():
             index=range(start_year, end_year + 1))
 
     def realized_pairwise_correlation(self):
-        "Calculate the correlation factor of past data."
+        """Calculate the correlation factor of past data."""
         c_coal = [c[0] for c in np.array(self.past_coal)[7:]]
         c_gas = [g[0] for g in np.array(self.past_gas)]
         x_gas = x_function(c_gas)
@@ -128,7 +132,7 @@ class import_prices_path():
         return coef_cor
 
     def price_path(self):
-        "Generate two correlated prices paths."
+        """Generate two correlated prices paths."""
         b = [random(), random()]
         drift = [log_returns(self.past_gas)[0], log_returns(self.past_coal)[0]]
         stdev = [log_returns(self.past_gas)[1], log_returns(self.past_coal)[1]]

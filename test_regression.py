@@ -16,7 +16,7 @@ from prices_data_local import local_prices
 from production_data_local import local_production
 from Run import RunPair
 from prices_data_international import import_prices_path, price_gas, price_coal
-from price_fuel import Fuel_Price
+from price_fuel import price_fuel
 from price_LCOE_run import multiple_LCOE
 from analysis import RUNPAIRS
 # pylint and pytest known compatibility bug
@@ -64,7 +64,7 @@ def test_past_data(regtest):
 
 def test_fuel_price(regtest):
     np.random.seed(0)
-    fuel_prices = Fuel_Price(local_prices, price_gas, price_coal, local_production, baseline)
+    fuel_prices = price_fuel(local_prices, price_gas, price_coal, local_production, baseline)
     regtest.write(fuel_prices.summary())
 
 

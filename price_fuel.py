@@ -1,11 +1,15 @@
 # -*- coding: utf-8 -*-
-"""
+"""Generate a model parameter object, with a random trajectory of coal and gas prices.
+
 Created on Mon Jan  8 16:54:44 2018
 
 @author: Alice Duval
-Fuel_price class deals with different prices and quantity of ressources needed, and generate new
+price_fuel class deals with different prices and quantity of ressources needed, and generate new
 prices parameters for the model.
 
+FIXME: This approach breaks the independence between parameters and scenarios,
+since it weights imported and domestic fuel price to compute an average price.
+Better to have fuels types.
 """
 import sys
 
@@ -27,7 +31,7 @@ from production_data_local import local_production
 from Parameter import Parameter
 
 
-class Fuel_Price():
+class price_fuel():
     """An average price for fuels."""
 
     def __init__(self, loc_prices, past_price_gas, past_price_coal, loc_production, scenario):
@@ -36,7 +40,7 @@ class Fuel_Price():
         self.loc_prices = loc_prices
         self.import_prices = import_prices_path(past_price_gas, past_price_coal).import_prices
         self.loc_production = loc_production
-        self.scenario = scenario
+        self.scenario = scenario   # TODO: pass as argument then disgard
 
         #Qualify what importation have to be done (in Btu)
         self.needed_production = self.needed_energy()
@@ -45,7 +49,7 @@ class Fuel_Price():
         self.parameters = self.generate_parameters()
 
     def needed_energy(self):
-        """Get how much energy from gas and coal is needed for the scenario."""
+        """Return the amount of heat energy from gas and coal needed for the scenario (MBtu)."""
         electric_energy = self.scenario.production[['Coal', 'Gas']].loc[start_year:end_year + 1]
         useful_heat_rate = heat_rate[['Coal', 'Gas']]
         needed_production = pd.DataFrame(
@@ -67,7 +71,7 @@ class Fuel_Price():
         return importation
 
     def price_calculation(self):
-        """Calculate the average fuel price (for Coal and Gas) in USD/Btu."""
+        """Return Coal and Gas cost in USD/Btu, by weight-averaged domestic and import costs."""
         #If there is not any importation, local price is considered
         average_price = pd.DataFrame(columns=['Coal', 'Gas'], index=self.index, dtype=float)
         average_price['Coal'] = np.where(
@@ -171,43 +175,46 @@ class Fuel_Price():
         milestones = [start_year, 2020, 2025, 2030, 2040, 2050]
 
         supply_coal = pd.DataFrame({
-            'Coal imported': self.needed_importation['Coal'] / (10**8 * MBtu),
-            'Coal locally produced': self.loc_production['Coal'] / (10**8 * MBtu),
-            'Coal needs': self.needed_production['Coal'] / (10**8 * MBtu)})
+            'Domestic': self.loc_production['Coal'] / (10**8 * MBtu),
+            'Imported': self.needed_importation['Coal'] / (10**8 * MBtu),
+            'Total': self.needed_production['Coal'] / (10**8 * MBtu)},
+            columns=['Domestic', 'Imported', 'Total'])
 
         prices_coal = pd.DataFrame({
-            'Average coal price': self.average_price['Coal'] * MBtu,
-            'Local coal price': self.loc_prices['Coal'] * MBtu,
-            'Imported coal price': self.import_prices["Coal"] * MBtu})
+            'Domestic': self.loc_prices['Coal'] * MBtu,
+            'Imported': self.import_prices["Coal"] * MBtu,
+            'Average': self.average_price['Coal'] * MBtu},
+            columns=['Domestic', 'Imported', 'Average'])
 
         supply_gas = pd.DataFrame({
-            'Gas needs': self.needed_production['Gas'] / (10**8 * MBtu),
-            'Gas locally produced': self.loc_production['Gas'] / (10**8 * MBtu),
-            'Gas imported': self.needed_importation['Gas'] / (10**8 * MBtu)})
+            'Domestic': self.loc_production['Gas'] / (10**8 * MBtu),
+            'Imported': self.needed_importation['Gas'] / (10**8 * MBtu),
+            'Total': self.needed_production['Gas'] / (10**8 * MBtu)},
+            columns=['Domestic', 'Imported', 'Total'])
 
         prices_gas = pd.DataFrame({
-            'Average gas price': self.average_price['Gas'] * MBtu,
-            'Local gas price': self.loc_prices['Gas'] * MBtu,
-            'Imported gas price': self.import_prices["Gas"] * MBtu})
+            'Domestic': self.loc_prices['Gas'] * MBtu,
+            'Imported': self.import_prices["Gas"] * MBtu,
+            'Average': self.average_price['Gas'] * MBtu},
+            columns=['Domestic', 'Imported', 'Average'])
 
         return (
             "\n Coal and Gas origin and prices for " + str(self.scenario) + '\n\n'
             "Coal supply (in E+8 MMBtu)\n"
-            + str(supply_coal.loc[milestones].round()) + '\n\n'
+            + str(supply_coal.loc[milestones].round(1)) + '\n\n'
             + "Coal prices (in $/MMBtu)\n"
-            + str(prices_coal.loc[milestones].round()) + '\n\n'
+            + str(prices_coal.loc[milestones].round(1)) + '\n\n'
             + "Gas supply (in E+8 MMBtu)\n"
-            + str(supply_gas.loc[milestones].round()) + '\n\n'
+            + str(supply_gas.loc[milestones].round(1)) + '\n\n'
             + "Gas prices (in $/MMBtu)\n"
-            + str(prices_gas.loc[milestones].round()) + '\n\n')
+            + str(prices_gas.loc[milestones].round(1)) + '\n\n')
 
 
 if __name__ == '__main__':
     np.random.seed(0)
-    new_param = Fuel_Price(local_prices, price_gas, price_coal, local_production,
-                           baseline)
+    new_param = price_fuel(local_prices, price_gas, price_coal, local_production, baseline)
     np.random.seed(0)
-    new_param_alternative = Fuel_Price(
+    new_param_alternative = price_fuel(
         local_prices,
         price_gas,
         price_coal,

@@ -8,7 +8,7 @@ Created on Sat Feb 10 22:18:16 2018
 from random import randint
 import numpy as np
 
-from price_fuel import Fuel_Price
+from price_fuel import price_fuel
 from prices_data_local import local_prices
 from plan_baseline import baseline
 from prices_data_international import price_gas, price_coal
@@ -42,9 +42,9 @@ def test_international_dependency():
 
     #Create the two objects to compare
     np.random.seed(0)
-    fuel_1 = Fuel_Price(local_prices, price_gas, price_coal, nul_production, baseline)
+    fuel_1 = price_fuel(local_prices, price_gas, price_coal, nul_production, baseline)
     np.random.seed(0)
-    fuel_2 = Fuel_Price(local_prices_compare, price_gas, price_coal, nul_production, baseline)
+    fuel_2 = price_fuel(local_prices_compare, price_gas, price_coal, nul_production, baseline)
 
     assert fuel_1.average_price["Coal"].all() == fuel_2.average_price["Coal"].all()
     assert fuel_1.average_price["Gas"].all() == fuel_2.average_price["Gas"].all()
@@ -73,9 +73,9 @@ def test_local_dependency():
 
     #Create the two objects to compare
     np.random.seed(0)
-    fuel_1 = Fuel_Price(local_prices, price_gas, price_coal, needed_production, baseline)
+    fuel_1 = price_fuel(local_prices, price_gas, price_coal, needed_production, baseline)
     np.random.seed(0)
-    fuel_2 = Fuel_Price(local_prices, price_gas_compare, price_coal_compare, needed_production,
+    fuel_2 = price_fuel(local_prices, price_gas_compare, price_coal_compare, needed_production,
                         baseline)
     assert fuel_1.average_price["Gas"].all() == fuel_2.average_price["Gas"].all()
     assert fuel_1.average_price["Coal"].all() == fuel_2.average_price["Coal"].all()
@@ -83,7 +83,7 @@ def test_local_dependency():
 
 def test_between_two_values():
     """Check that the averaged price is between the local value and the international value."""
-    fuel_1 = Fuel_Price(local_prices, price_gas, price_coal, local_production, baseline)
+    fuel_1 = price_fuel(local_prices, price_gas, price_coal, local_production, baseline)
     averaged = fuel_1.average_price["Gas"].all()
     prices = pd.concat([fuel_1.import_prices["Gas"], local_prices["Gas"]], axis=1)
     lower = prices.min(axis=1).all()

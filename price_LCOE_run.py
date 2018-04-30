@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
-"""
+"""Multiple Run to calculate LCOE for different international prices trajectories.
+
 Created on Tue Feb  6 09:08:21 2018
 
 @author: Alice Duval
-
-Multiple Run to calculate LCOE for different international prices trajectories
 """
 
 import sys
@@ -13,7 +12,7 @@ import matplotlib.pyplot as plt
 
 from plan_baseline import baseline
 from plan_baseline_2 import alternative
-from price_fuel import Fuel_Price
+from price_fuel import price_fuel
 from prices_data_international import price_gas, price_coal
 from prices_data_local import local_prices
 from production_data_local import local_production
@@ -23,9 +22,9 @@ from Run import Run
 
 
 class multiple_LCOE():
-    """
-    Multiple runs of the model for different international coal and gas prices parameters.
-    Compare LCOE of eache run, one to another
+    """Multiple runs of the model for different international coal and gas prices parameters.
+
+    Compare LCOE of each run, one to another
     """
 
     def __init__(self, scenario, number_run):
@@ -33,8 +32,8 @@ class multiple_LCOE():
         self.number_run = number_run
 
     def one_run(self):
-        """Generate parameters and run the model with these newly defined parameters"""
-        reference = Fuel_Price(
+        """Generate parameters and run the model with these newly defined parameters."""
+        reference = price_fuel(
             local_prices,
             price_gas,
             price_coal,
@@ -44,8 +43,11 @@ class multiple_LCOE():
         return run_model.lcoe
 
     def multiple_run(self):
-        """Initiate the random factor
-        Store lcoe price generated for each run of the model in a sorted list"""
+        """Run the Monte Carlo sensitivy analysis.
+
+        Initialize the random factor.
+        Store lcoe price generated for each run of the model in a sorted list
+        """
         lcoe_list = []
         for i in range(self.number_run):
             np.random.seed(i)
@@ -54,7 +56,7 @@ class multiple_LCOE():
         return lcoe_list
 
     def summary(self):
-        """Summary of LCOE prices"""
+        """Summarize of LCOE prices."""
         lcoe_values = self.multiple_run()
         mean_value = np.mean(lcoe_values)
         median_value = np.median(lcoe_values)
@@ -73,7 +75,7 @@ class multiple_LCOE():
         print(self.summary())
 
     def plot(self, filename):
-        """Plot generated LCOE"""
+        """Plot generated LCOE."""
         lcoe = self.multiple_run()
         fig = plt.figure()
         fig.suptitle('LCOE for ' + str(self.number_run) +
