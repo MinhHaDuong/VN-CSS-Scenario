@@ -21,26 +21,9 @@ from data_PDP7A import (PDP7A_annex1, capacities_PDP7A, capacity_total_plan, pro
                         capacity_factor_PDP7A)
 
 from PowerPlan import PowerPlan
+from plan_baseline import fill_in, extend
 
 #%%
-
-
-def fill_in(serie):
-    """Return the investments needed to reach the capacity objectives.
-
-    Approximately because cast as integer
-    """
-    capacity_2015 = capacity_past.cumsum().loc[2015, serie.name]
-    a = (serie[2020] - capacity_2015) / 15
-    b = (serie[2025] - serie[2020]) / 15
-    c = (serie[2030] - serie[2025]) / 15
-    return pd.Series(name=serie.name,
-                     data=[a, 2 * a, 3 * a, 4 * a, 5 * a,
-                           b, 2 * b, 3 * b, 4 * b, 5 * b,
-                           c, 2 * c, 3 * c, 4 * c, 5 * c],
-                     index=range(2016, 2031),
-                     dtype="int64")
-
 
 #%%  Capacity additions
 
@@ -104,29 +87,6 @@ retirement.loc[2019, "Oil"] = 100
 retirement = retirement.rolling(window=2, center=False).mean()
 
 retirement.loc[1974] = 0
-
-#%%
-
-
-def extend(serie, endpoint, newname, past=capacity_factor_past, future=capacity_factor_PDP7A):
-    """Extend a series by interpolating between 2020, 2025, 2030 and a 2050 endpoint."""
-    r = past[serie]
-    a = (r.loc[2013] + r.loc[2014] + r.loc[2015]) / 15
-    b = future.loc[2020, serie] / 5
-    c = future.loc[2025, serie] / 5
-    d = future.loc[2030, serie] / 5
-    s = pd.Series(name=newname,
-                  data=[4 * a + b, 3 * a + 2 * b, 2 * a + 3 * b, a + 4 * b, 5 * b,
-                        4 * b + c, 3 * b + 2 * c, 2 * b + 3 * c, b + 4 * c, 5 * c,
-                        4 * c + d, 3 * c + 2 * d, 2 * c + 3 * d, c + 4 * d, 5 * d],
-                  index=range(2016, 2031))
-    r = r.append(s)
-    d *= 5
-    e = endpoint
-    s = pd.Series(name=newname,
-                  data=[d + (e - d) * (i + 1) / 20 for i in range(20)],
-                  index=range(2031, 2051))
-    return r.append(s)
 
 
 #%% Electricity production
