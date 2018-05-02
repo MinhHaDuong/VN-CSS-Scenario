@@ -28,7 +28,10 @@ from init import fuels, addcol_Renewable4
 
 from data_past import capacity_past, production_past, capacity_factor_past, capacity_2015_EVN
 
-from data_PDP7A import (PDP7A_annex1, capacities_PDP7A, capacity_total_plan, production_PDP7A,
+from data_PDP7A import (PDP7A_annex1,
+                        capacities_PDP7A,
+                        capacity_total_plan,
+                        production_PDP7A,
                         capacity_factor_PDP7A)
 
 from PowerPlan import PowerPlan

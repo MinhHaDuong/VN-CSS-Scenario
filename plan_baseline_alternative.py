@@ -24,12 +24,15 @@ from init import fuels, addcol_Renewable4
 
 from data_past import capacity_past, production_past, capacity_factor_past, capacity_2015_EVN
 
-# FIXME: import from the normal data_PDP7A
-from data_alternative import (PDP7A_annex1,
-                              capacities_PDP7A,
-                              capacity_total_plan,
-                              production_PDP7A,
-                              capacity_factor_PDP7A)
+# FIXME: import from the normal data_PDP7A and modify the development plan by code
+# or better yet:
+# from plan_baseline import additions, retirement, capacityfactor, net_import
+#   modify additions and retirement
+#   alternative = PowerPlan(additions, retirement, capacityfactor, net_import)
+
+from data_alternative import PDP7A_annex1, capacity_total_plan
+
+from data_PDP7A import capacities_PDP7A, production_PDP7A, capacity_factor_PDP7A
 
 from PowerPlan import PowerPlan
 

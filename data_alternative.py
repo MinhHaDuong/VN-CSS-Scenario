@@ -8,8 +8,7 @@ Created on Tue Feb 13 21:02:36 2018
 FIXME: This file duplicate data_PDP7A.py, except it uses a patched version of annex1.txt
 """
 
-from init import pd, show, fuels, Mt, GWh, g, kWh
-
+from init import pd, show
 # %%  List of planned new plants
 
 PDP7A_annex1 = pd.read_fwf("data/PDP7A/annex1_alt3.txt")
@@ -41,67 +40,3 @@ show("""
 Small hydro not specified, included in Renewable4
 Wind, Solar, Biomass not specifed after 2020
 """)
-
-# %% Capacity objectives (Installed GW by fuel type)
-
-capacities_PDP7A = pd.read_csv("data/PDP7A/Objectives.csv", header=13, nrows=4, index_col=0)
-
-capacities_PDP7A = capacities_PDP7A.drop(2015)
-
-capacities_PDP7A["Hydro"] = capacities_PDP7A["Hydro+Storage"] - capacities_PDP7A["PumpedStorage"]
-capacities_PDP7A["BigHydro"] = (capacities_PDP7A["BigHydro+Storage"]
-                                - capacities_PDP7A["PumpedStorage"])
-capacities_PDP7A["Oil"] = 0
-capacities_PDP7A["CoalCCS"] = 0
-capacities_PDP7A["GasCCS"] = 0
-capacities_PDP7A["BioCCS"] = 0
-
-show("""
-PDP7A capacity objectives by fuel type (GW)
-""")
-show(capacities_PDP7A[fuels + ["Nuclear", "Import", "PumpedStorage"]])
-
-# %% Production objectives
-
-production_PDP7A = pd.read_csv("data/PDP7A/Objectives.csv", header=26, nrows=3, index_col=0)
-
-production_PDP7A["Oil"] = 0
-production_PDP7A["CoalCCS"] = 0
-production_PDP7A["GasCCS"] = 0
-production_PDP7A["BioCCS"] = 0
-
-show("""
-PDP7A power generation objectives by fuel type (GWh)
-""")
-show(production_PDP7A[fuels + ["Nuclear", "Import"]])
-
-# %% Implicit capacity factors
-
-capacity_factor_PDP7A = production_PDP7A / capacities_PDP7A * 1000 / 8760
-
-capacity_factor_PDP7A = capacity_factor_PDP7A[["Coal",
-                                               "Gas",
-                                               "Hydro",
-                                               "BigHydro",
-                                               "SmallHydro",
-                                               "Renewable",
-                                               "Nuclear"]]
-
-show("""
-Capacity factors implicit in PDP7A decision
-based on 8760 hours/year
-""")
-show(capacity_factor_PDP7A)
-
-
-# %% Coal use objectives mentionned in the PDP (not used in our model)
-
-fuel_use_PDP7A = pd.read_csv("data/PDP7A/Objectives.csv", header=38, nrows=3, index_col=0)
-
-show("Coal consumption, PDP7A (Mt)")
-show(fuel_use_PDP7A.Coal)
-
-coal_intensity_PDP7A = (fuel_use_PDP7A.Coal * Mt) / (production_PDP7A.Coal * GWh) / (g / kWh)
-
-show("Coal intensity, PDP7A (g / kWh)")
-show(coal_intensity_PDP7A.round())
