@@ -9,7 +9,7 @@ PYTHON = python3
 COVERAGE = python3-coverage
 PYTEST = py.test-3
 
-tables = table-parameters.fwf table-comparison.fwf table-price-run.fwf table-past-data.fwf table-LCOE-prices.fwf
+tables = table-parameters.fwf table-comparison.fwf price_fuel.txt prices_data_international.txt price_LCOE_run.txt
 
 figures = plan_baseline.pdf plan_withCCS.pdf plan_moreGas.pdf figure-capacities.pdf figure-capacities.png figure_prices.pdf price_fuel.pdf price_LCOE_run.pdf
 
@@ -24,12 +24,6 @@ table-parameters.fwf: param_reference.txt
 
 table-comparison.fwf: Run.txt
 	head -26 $< | tail -16 > $@
-
-table-price-run.fwf: price_fuel.txt
-
-table-past-data.fwf: prices_data_international.txt
-
-table-LCOE-prices.fwf: price_LCOE_run.txt
 
 %.txt: %.py
 	@-sed -i "s/VERBOSE = True/VERBOSE = False/" init.py
@@ -81,3 +75,4 @@ cleaner: clean
 	rm -rf __pycache__
 	rm -f *.bak
 	rm -rf .coverage coverage.xml htmlcov
+
