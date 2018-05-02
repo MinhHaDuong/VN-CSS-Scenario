@@ -5,9 +5,9 @@ Created on Tue Feb 13 22:12:01 2018
 
 @author: Alice Duval
 
-2nd alternative scenario that favour gas development. Each year, the same amount of electricity is
-produced from gas and from coal (equality of generation capacity). The energy produced per year is
-the same than in the baseline scenario
+The energy produced per year is the same than in the baseline scenario.
+Coal power plants are substituted by gas power plant so that each year,
+the same amount of electricity is produced from gas and from coal.
 """
 
 import sys
@@ -163,14 +163,14 @@ retirement["Gas"] = average_retirement
 
 #%% Main statement
 
-alternative = PowerPlan(additions, retirement, capacityfactor, net_import)
-alternative.__doc__ = "Baseline - Alternative2"
+moreGas = PowerPlan(additions, retirement, capacityfactor, net_import)
+moreGas.__doc__ = "As much gas power as coal power."
 
 if __name__ == '__main__':
     if (len(sys.argv) == 2) and (sys.argv[1] == "summarize"):
-        alternative.summarize()
+        moreGas.summarize()
     if (len(sys.argv) == 3) and (sys.argv[1] == "plot"):
-        alternative.plot_plan(sys.argv[2])
+        moreGas.plot_plan(sys.argv[2])
 
 #%% Validation: compares to PDP7A
 
@@ -182,7 +182,7 @@ show("""
 
 compared = ["Coal", "Gas", "BigHydro", "Renewable4", "Nuclear"]
 
-tocompare = alternative.capacities.loc[[2020, 2025, 2030]]
+tocompare = moreGas.capacities.loc[[2020, 2025, 2030]]
 tocompare["Gas"] = tocompare.Gas + tocompare.Oil
 tocompare["Nuclear"] = 0
 addcol_Renewable4(tocompare)

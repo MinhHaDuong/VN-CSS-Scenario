@@ -18,7 +18,7 @@ import matplotlib.pyplot as plt
 from init import pd, start_year, end_year, sources, MBtu
 
 from plan_baseline import baseline
-from plan_baseline_2 import alternative
+from plan_moreGas import moreGas
 
 from param_reference import discount_rate, plant_accounting_life, construction_cost
 from param_reference import fixed_operating_cost, variable_operating_cost, heat_rate, heat_price
@@ -214,15 +214,15 @@ if __name__ == '__main__':
     np.random.seed(0)
     new_param = price_fuel(local_prices, price_gas, price_coal, local_production, baseline)
     np.random.seed(0)
-    new_param_alternative = price_fuel(
+    new_param_moreGas = price_fuel(
         local_prices,
         price_gas,
         price_coal,
         local_production,
-        alternative)
+        moreGas)
     if (len(sys.argv) == 2) and (sys.argv[1] == "summarize"):
         new_param.summarize()
-        new_param_alternative.summarize()
+        new_param_moreGas.summarize()
 
     if (len(sys.argv) == 3) and (sys.argv[1] == "plot"):
         new_param.plot_information(sys.argv[2])

@@ -11,7 +11,7 @@
 import numpy as np
 from param_reference import reference
 from plan_baseline import baseline
-from plan_baseline_2 import alternative
+from plan_moreGas import moreGas
 from plan_withCCS import withCCS
 from prices_data_local import local_prices
 from production_data_local import local_production
@@ -48,8 +48,8 @@ def test_baseline_summary(regtest):
     regtest.write(baseline.summary())
 
 
-def test_alternative_summary(regtest):
-    regtest.write(alternative.summary())
+def test_moreGas_summary(regtest):
+    regtest.write(moreGas.summary())
 
 
 def test_runpair_summary(regtest):

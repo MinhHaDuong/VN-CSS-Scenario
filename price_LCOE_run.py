@@ -11,7 +11,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 from plan_baseline import baseline
-from plan_baseline_2 import alternative
+from plan_moreGas import moreGas
 from price_fuel import price_fuel
 from prices_data_international import price_gas, price_coal
 from prices_data_local import local_prices
@@ -92,7 +92,7 @@ if __name__ == '__main__':
     if (len(sys.argv) == 2) and (sys.argv[1] == "summarize"):
         LCOE_list = multiple_LCOE(baseline, 100)
         LCOE_list.summarize()
-        LCOE_list_alt = multiple_LCOE(alternative, 100)
+        LCOE_list_alt = multiple_LCOE(moreGas, 100)
         LCOE_list_alt.summarize()
 
     if (len(sys.argv) == 3) and (sys.argv[1] == "plot"):
