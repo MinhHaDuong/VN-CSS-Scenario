@@ -52,11 +52,15 @@ ignore=W503,E402
 
 3. Files starting with data_X mostly make available the data found in `data/X/`
 
-4. Files starting with an Upper case define the class with that name
+4. Files starting with an Upper case define the class with that name: Plan, Parameter, Run
 
-5. Files starting with plan_ instanciate a `PowerPlan` object
+5. Files starting with plan_ instanciate a `Plan` object
 
-6. Files starting with param_ instanciate a `Parameter` object
+6. Files starting with parameter_ instanciate a `Parameter` object
+
+7. Files starting with run_ instanciate one or more `Run` object-s
+
+8. Files starting with test_ are used by the  pytest  framework.
 
 7. Files in `tables.tocompare` are used for regression testing. Use `make reg_tests_reset` to populate/update it.
 

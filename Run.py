@@ -4,17 +4,12 @@
 # minh.haduong@gmail.com
 # Creative Commons Attribution-ShareAlike 4.0 International
 #
-"""Assess the scenarios."""
-
-import sys
+#"""Assess the scenarios."""
+"""Define a model run and the tables comparing a pair of runs."""
 
 from init import pd, plant_type, sources
 from init import start_year, end_year, years, present_value
 from init import kW, MW, USD, MUSD, GUSD, GWh, MWh, TWh, kWh, Btu, MBtu, TBtu, g, t, kt, Mt, Gt
-
-from plan_baseline import baseline
-from plan_withCCS import withCCS
-from parameter_reference import reference
 
 # %% Accounting functions
 
@@ -278,14 +273,3 @@ class RunPair():
                 + str(self.carbon_intensity(headers)) + '\n\n'
                 + 'Carbon Captured (Mt)\n'
                 + str(self.carbon_captured(headers)) + '\n\n')
-
-
-if __name__ == '__main__':
-    if (len(sys.argv) == 2) and (sys.argv[1] == "summarize"):
-        print("""
-******************************************
-***             Results                ***
-******************************************
-""")
-        PAIR = RunPair(baseline, withCCS, reference)
-        print(PAIR.summary(["Baseline", "High CCS", "difference"]))

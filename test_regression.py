@@ -18,7 +18,7 @@ from production_data_local import local_production
 from Run import RunPair
 from prices_data_international import import_prices_path, price_gas, price_coal
 from price_fuel import price_fuel
-from price_LCOE_run import multiple_LCOE
+from run_sensitivity_LCOE import multiple_LCOE
 from sensitivity_analysis_CCS import RUNPAIRS
 # pylint and pytest known compatibility bug
 # pylint: disable=redefined-outer-name
