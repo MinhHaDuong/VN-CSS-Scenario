@@ -10,7 +10,7 @@ import hashlib
 
 import matplotlib.pyplot as plt
 
-from init import fuels, sources, technologies, start_year, end_year
+from init import plant_type, sources, technologies, start_year, end_year
 from init import GWh, TWh, MW, GW
 
 # %%
@@ -46,7 +46,7 @@ class PowerPlan(namedtuple('PowerPlan',
             + "Annual generation capacity addition by fuel type (MW)\n"
             + str(self.additions.loc[milestones, technologies].round()) + '\n\n'
             + "Old capacity retirement by fuel type (MW)\n"
-            + str(self.retirement.loc[milestones, fuels].round()) + '\n\n'
+            + str(self.retirement.loc[milestones, plant_type].round()) + '\n\n'
             + "Generation capacity by fuel type (MW)\n"
             + str(self.capacities.loc[milestones, technologies].round()) + '\n\n'
             + "Electricity production (GWh)\n"

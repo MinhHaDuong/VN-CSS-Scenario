@@ -36,7 +36,7 @@ since the capacity factors are not comparable, neither are the investment costs
 "Coal CCS" has a lower efficiency (higher heat rate) than "Coal" of same capacity
 """
 
-from init import pd, show, fuels, sources, addcol_Renewable, addcol_Renewable4
+from init import pd, show, plant_type, sources, addcol_Renewable, addcol_Renewable4
 
 
 # %% Read data from EVN 2016 activity report
@@ -118,14 +118,14 @@ show("""
 Vietnam historical capacity additions by fuel type (MW)
 Source: Capacities listed in EVN activity report 2016, dated by internet search
 """)
-show(capacity_past[fuels])
+show(capacity_past[plant_type])
 show()
 
 show("""
 Vietnam historical generation capacity by fuel type (MW)
 Source: Capacities listed in EVN activity report 2016, dated by internet search
 """)
-show(capacity_past[fuels].cumsum())
+show(capacity_past[plant_type].cumsum())
 show()
 
 show("""
@@ -221,4 +221,4 @@ show("""
 Vietnam historical capacity factors by fuel type
 Source: author
 """)
-show(capacity_factor_past[fuels].drop("Solar", axis=1))
+show(capacity_factor_past[plant_type].drop("Solar", axis=1))

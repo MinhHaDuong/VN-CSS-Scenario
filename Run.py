@@ -8,7 +8,7 @@
 
 import sys
 
-from init import pd, fuels, sources
+from init import pd, plant_type, sources
 from init import start_year, end_year, years, present_value
 from init import kW, MW, USD, MUSD, GUSD, GWh, MWh, TWh, kWh, Btu, MBtu, TBtu, g, t, kt, Mt, Gt
 
@@ -189,10 +189,10 @@ class Run():
         return (str(self) + " - Detailed results tables"
                 + "\n\n"
                 + "Construction costs (M$)\n"
-                + str(self.investment.loc[start_year:, fuels].round())
+                + str(self.investment.loc[start_year:, plant_type].round())
                 + "\n\n"
                 + "Fixed operating costs (M$)\n"
-                + str(self.fixed_OM_cost.loc[start_year:, fuels].round())
+                + str(self.fixed_OM_cost.loc[start_year:, plant_type].round())
                 + "\n\n"
                 + "Variable operating costs (M$)\n"
                 + str(self.variable_OM_cost.loc[start_year:, sources].round())

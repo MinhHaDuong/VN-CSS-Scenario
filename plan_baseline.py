@@ -24,7 +24,7 @@ python3 plan_baseline.py plot filename.[pdf|png|...]
 import sys
 
 from init import pd, VERBOSE, show
-from init import fuels, addcol_Renewable4
+from init import plant_type, addcol_Renewable4
 
 from data_past import capacity_past, production_past, capacity_factor_past, capacity_2015_EVN
 
@@ -78,7 +78,8 @@ additions["Import"] = fill_in(capacities_PDP7A.Import)
 
 additions = pd.concat([capacity_past, additions])
 
-additions = additions[fuels + ["PumpedStorage", "Import"]].fillna(0)
+# FIXME: plant_type + ["PumpedStorage", "Import"] is technologies
+additions = additions[plant_type + ["PumpedStorage", "Import"]].fillna(0)
 
 # 2031 - 2050 scenario definition
 
@@ -227,7 +228,7 @@ capacity_old = pd.Series(capacity_past.cumsum().loc[1980], name="Installed befor
 comparison = comparison.append(capacity_old)
 
 show("Coherence of 2015 Generation capacity numbers")
-show(comparison[fuels])
+show(comparison[plant_type])
 
 show("""
 Some coal, gas, oil and hydro capacities listed in the EVN report historical table are
@@ -248,7 +249,7 @@ if VERBOSE:
     ax.axvline(2015, color="k")
 
 
-#b = production_past[fuels].astype("int64")
+#b = production_past[plant_type].astype("int64")
 #
 #show("Past - Electricity production (GWh)")
 #show(b)

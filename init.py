@@ -87,11 +87,11 @@ def discount(value, year, discount_rate):
 # Nuclear is presently out of the power planning discussion in Vietnam
 # CCS also, but that's the point of our study.
 
-fuels = ["Coal", "Gas", "Oil",
-         "BigHydro", "SmallHydro", "Biomass", "Wind", "Solar",
-         "CoalCCS", "GasCCS", "BioCCS"]
+plant_type = ["Coal", "Gas", "Oil",
+              "BigHydro", "SmallHydro", "Biomass", "Wind", "Solar",
+              "CoalCCS", "GasCCS", "BioCCS"]
 
-sources = fuels + ["Import"]
+sources = plant_type + ["Import"]
 
 technologies = sources + ["PumpedStorage"]
 
