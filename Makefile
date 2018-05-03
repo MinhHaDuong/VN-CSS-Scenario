@@ -11,8 +11,8 @@ COVERAGE = python3-coverage
 PYTEST = py.test-3
 
 # Tables and figures for the paper on CCS
-tables-CCS = table-parameters.fwf table-comparison.fwf
-figures-CCS = plan_baseline.pdf plan_withCCS.pdf figure-capacities.pdf figure-capacities.png
+tables-CCS = table-parameters.fwf table-comparison.fwf sensitivity_analysis_CCS.txt
+figures-CCS = plan_baseline.pdf plan_withCCS.pdf figure_capacities.pdf figure_capacities.png
 
 # Tables and figures for the paper on sensitivity analysis to international prices of coal and gas
 tables-moreGas = price_fuel.txt prices_data_international.txt price_LCOE_run.txt
