@@ -53,7 +53,8 @@ class Run():
         self.parameter = parameter
 
         def pv(variable):
-            return present_value(variable, parameter.discount_rate).sum()  # Sum on technologies
+            """Present value of a variable summed across technologies."""
+            return present_value(variable, parameter.discount_rate).sum()
 
         self.total_production = pv(plan.production[sources])
 
@@ -139,20 +140,21 @@ class Run():
 
     def total(self):
         """Dataframe tabulating the key results."""
-        def f(cost):
+        def bnUSD(cost):
+            """Format as integer number of billion USD."""
             return [round(cost * MUSD / GUSD), "bn USD"]
         d = pd.DataFrame()
         d["Power produced"] = [(self.total_production * GWh / TWh).round(), "Twh"]
         d["System LCOE"] = [round(self.lcoe * (MUSD / GWh) / (USD / MWh), 1), "USD/MWh"]
-        d["Total cost"] = f(self.total_cost)
-        d[" Construction"] = f(self.total_investment)
-        d[" Fuel cost"] = f(self.total_fuel_cost)
-        d[" O&M"] = f(self.total_fixed_OM_cost + self.total_variable_OM_cost)
-        d[" Salvage value"] = f(-self.total_salvage_value)
+        d["Total cost"] = bnUSD(self.total_cost)
+        d[" Construction"] = bnUSD(self.total_investment)
+        d[" Fuel cost"] = bnUSD(self.total_fuel_cost)
+        d[" O&M"] = bnUSD(self.total_fixed_OM_cost + self.total_variable_OM_cost)
+        d[" Salvage value"] = bnUSD(-self.total_salvage_value)
         d["CO2 emissions"] = [round(self.total_emissions, 1), "GtCO2eq"]
         d["CO2 capture"] = [round(self.total_capture, 1), "GtCO2"]
-        d["CO2 cost"] = f(self.total_external_cost)
-        d["Cost with CO2"] = f(self.total_cost + self.total_external_cost)
+        d["CO2 cost"] = bnUSD(self.total_external_cost)
+        d["Cost with CO2"] = bnUSD(self.total_cost + self.total_external_cost)
         d = d.transpose()
         d.columns = [str(self), 'Unit']
         return d
@@ -218,10 +220,10 @@ class RunPair():
         self.ALT = Run(alt, parameter)
 
     def __str__(self):
-        s = str(self.BAU.parameter) + '\n\n'
-        s += "BAU = " + str(self.BAU.plan) + '\n'
-        s += "ALT = " + str(self.ALT.plan)
-        return s
+        name = str(self.BAU.parameter) + '\n\n'
+        name += "BAU = " + str(self.BAU.plan) + '\n'
+        name += "ALT = " + str(self.ALT.plan)
+        return name
 
     def total(self, headers):
         """Dataframe comparing the key results of the two runs."""
