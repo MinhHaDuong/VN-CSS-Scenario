@@ -9,7 +9,7 @@ prices parameters for the model.
 
 FIXME: This approach breaks the independence between parameters and scenarios,
 since it weights imported and domestic fuel price to compute an average price.
-Better to have fuels types.
+Better to have explicit fuels types in the model.
 """
 import sys
 

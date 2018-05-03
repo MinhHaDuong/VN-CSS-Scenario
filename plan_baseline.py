@@ -122,6 +122,9 @@ retirement.loc[1974] = 0
 # %%
 
 
+# FIXME: complexity too high
+# define and use function interpolating in place between two given years.
+#
 def extend(serie, endpoint, newname, past=capacity_factor_past, future=capacity_factor_PDP7A):
     """Extend a series by interpolating between 2020, 2025, 2030 and a 2050 endpoint."""
     r = past[serie]

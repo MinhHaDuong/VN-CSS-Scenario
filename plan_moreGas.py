@@ -1,13 +1,17 @@
-# -*- coding: utf-8 -*-
-"""Define a Vietnam power development plan with generating as much from gas as from coal.
+# encoding: utf-8
+#
+# (c) Minh Ha-Duong  2017-2018
+# minh.haduong@gmail.com
+# Creative Commons Attribution-ShareAlike 4.0 International
+# With contribution from Alice Duval, CIRED
+#
 
-Created on Tue Feb 13 22:12:01 2018
 
-@author: Alice Duval
+"""Define a power development plan with generating as much from gas as from coal.
 
-The energy produced per year is the same than in the baseline scenario.
-Coal power plants are substituted by gas power plant so that each year,
-the same amount of electricity is produced from gas and from coal.
+Each year, the same amount of new capacity from gas and from coal are the same.
+The electricity produced per year is the less than in the baseline scenario,
+because for gas capacity factor is lower and plant lifetime shorter.
 """
 
 import sys
@@ -15,111 +19,24 @@ import sys
 from init import pd, VERBOSE, show
 from init import fuels, addcol_Renewable4
 
-from data_past import capacity_past, production_past, capacity_factor_past, capacity_2015_EVN
+from data_past import capacity_past, capacity_factor_past, capacity_2015_EVN
 
-from data_PDP7A import (PDP7A_annex1, capacities_PDP7A, capacity_total_plan, production_PDP7A,
-                        capacity_factor_PDP7A)
+from data_PDP7A import (capacities_PDP7A, capacity_total_plan, capacity_factor_PDP7A)
 
 from PowerPlan import PowerPlan
-from plan_baseline import fill_in, extend
+from plan_baseline import (additions as baseline_additions,
+                           retirement as baseline_retirement,
+                           capacityfactor, net_import)
 
-#%%
+# %%
 
-#%%  Capacity additions
+additions = baseline_additions.copy()
+additions["Coal"] = (additions["Coal"] + additions["Gas"]) / 2
+additions["Gas"] = additions["Coal"]
 
-# 2016 - 2030 capacity additions for Coal, Gas, Oil, BigHydro
-
-additions = PDP7A_annex1.replace({"fuel": {"Nuclear": "Gas"}})
-
-additions = additions.groupby(["year", "fuel"]).capacity_MW.sum()
-additions = additions.unstack()
-additions.drop("ND*", axis=1, inplace=True)
-
-# 2016 - 2030 capacity additions for the four renewable technologies
-
-additions["Solar"] = fill_in(capacities_PDP7A.Solar)
-additions["Wind"] = fill_in(capacities_PDP7A.Wind)
-additions["Biomass"] = fill_in(capacities_PDP7A.Biomass)
-additions["SmallHydro"] = fill_in(capacities_PDP7A.SmallHydro)
-additions["Import"] = fill_in(capacities_PDP7A.Import)
-
-# 1974 - 2015 capacity additions and cleanup
-
-additions = pd.concat([capacity_past, additions])
-
-additions = additions[fuels + ["PumpedStorage", "Import"]].fillna(0)
-
-# 2031 - 2050 scenario definition
-
-increment = {"Coal": 0, "Gas": 750, "Oil": 20, "BigHydro": 0,
-             "SmallHydro": 50, "Biomass": 50, "Wind": 900, "Solar": 1000,
-             "PumpedStorage": 50, "Import": 50, "CoalCCS": 0, "GasCCS": 0, "BioCCS": 0}
-
-for y in range(2031, 2051):
-    additions.loc[y] = increment
-
-
-#%% Old plant retirement program
-
-plant_life = pd.Series({"Coal": 40, "Gas": 25, "Oil": 30,
-                        "BigHydro": 100, "SmallHydro": 60, "Biomass": 25, "Wind": 20, "Solar": 25,
-                        "CoalCCS": 40, "GasCCS": 25, "BioCCS": 25,
-                        "PumpedStorage": 100, "Import": 100})
-
-
-retirement = pd.DataFrame()
-
-for tech in plant_life.index:
-    retirement[tech] = additions[tech].shift(plant_life[tech])
-
-retirement.fillna(0, inplace=True)
-
-# Fix to meet PDP7A objective more precisely
-retirement.loc[2017, "BigHydro"] = 200
-retirement.loc[2018, "BigHydro"] = 200
-retirement.loc[2019, "BigHydro"] = 200
-
-retirement.loc[2017, "Oil"] = 100
-retirement.loc[2018, "Oil"] = 100
-retirement.loc[2019, "Oil"] = 100
-
-# Smooth the retirement program a bit, especially Gas 2025
-retirement = retirement.rolling(window=2, center=False).mean()
-
-retirement.loc[1974] = 0
-
-
-#%% Electricity production
-
-capacityfactor = pd.DataFrame()
-
-capacityfactor["Coal"] = extend("Coal", 0.6, "Coal")
-capacityfactor["Gas"] = extend("Gas", 0.6, "Gas")
-capacityfactor["Oil"] = 0.25
-capacityfactor["BigHydro"] = extend("BigHydro", 0.4, "BigHydro")
-capacityfactor["SmallHydro"] = extend("SmallHydro", 0.6, "SmallHydro")
-capacityfactor["Biomass"] = extend("Renewable", 0.3, "Biomass")
-capacityfactor["Wind"] = extend("Renewable", 0.3, "Wind")
-capacityfactor["Solar"] = extend("Renewable", 0.23, "Solar")
-
-capacityfactor["CoalCCS"] = capacityfactor["Coal"]
-capacityfactor["GasCCS"] = capacityfactor["Gas"]
-capacityfactor["BioCCS"] = capacityfactor["Biomass"]
-
-capacityfactor = capacityfactor.where(capacityfactor < 1)
-
-net_import = extend("Import", 7000, "Import", production_past, production_PDP7A)
-
-#%%
-
-average_additions = (additions["Coal"] + additions["Gas"]) / 2
-average_retirement = (retirement["Coal"] + retirement["Gas"]) / 2
-
-additions["Coal"] = average_additions
-additions["Gas"] = average_additions
-
-retirement["Coal"] = average_retirement
-retirement["Gas"] = average_retirement
+retirement = baseline_retirement.copy()
+retirement["Coal"] = (retirement["Coal"] + retirement["Gas"]) / 2
+retirement["Gas"] = retirement["Coal"]
 
 #%% Main statement
 
@@ -132,7 +49,7 @@ if __name__ == '__main__':
     if (len(sys.argv) == 3) and (sys.argv[1] == "plot"):
         moreGas.plot_plan(sys.argv[2])
 
-#%% Validation: compares to PDP7A
+# %% Validation: compares to PDP7A
 
 show("""
 *****************************************************
