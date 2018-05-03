@@ -13,7 +13,7 @@ from prices_data_local import local_prices
 from plan_baseline import baseline
 from prices_data_international import price_gas, price_coal
 from production_data_local import local_production
-from param_reference import heat_rate
+from parameter_reference import heat_rate
 from init import pd, start_year, end_year
 
 

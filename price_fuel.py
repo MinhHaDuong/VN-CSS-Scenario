@@ -7,7 +7,7 @@ Created on Mon Jan  8 16:54:44 2018
 price_fuel class deals with different prices and quantity of ressources needed, and generate new
 prices parameters for the model.
 
-FIXME: This approach breaks the independence between parameters and scenarios,
+FIXME: This approach breaks the independence between parameter and plan,
 since it weights imported and domestic fuel price to compute an average price.
 Better to have explicit fuels types in the model.
 """
@@ -20,9 +20,9 @@ from init import pd, start_year, end_year, sources, MBtu
 from plan_baseline import baseline
 from plan_moreGas import moreGas
 
-from param_reference import discount_rate, plant_accounting_life, construction_cost
-from param_reference import fixed_operating_cost, variable_operating_cost, heat_rate, heat_price
-from param_reference import emission_factor, capture_factor, carbon_price
+from parameter_reference import discount_rate, plant_accounting_life, construction_cost, heat_rate
+from parameter_reference import fixed_operating_cost, variable_operating_cost, heat_price
+from parameter_reference import emission_factor, capture_factor, carbon_price
 
 from prices_data_local import local_prices
 from prices_data_international import import_prices_path, price_coal, price_gas
@@ -34,23 +34,23 @@ from Parameter import Parameter
 class price_fuel():
     """An average price for fuels."""
 
-    def __init__(self, loc_prices, past_price_gas, past_price_coal, loc_production, scenario):
+    def __init__(self, loc_prices, past_price_gas, past_price_coal, loc_production, plan):
 
         self.index = list(range(start_year, end_year + 1))
         self.loc_prices = loc_prices
         self.import_prices = import_prices_path(past_price_gas, past_price_coal).import_prices
         self.loc_production = loc_production
-        self.scenario = scenario   # TODO: pass as argument then disgard
+        self.plan_name = str(plan)
 
         #Qualify what importation have to be done (in Btu)
-        self.needed_production = self.needed_energy()
+        self.needed_production = self.needed_energy(plan)
         self.needed_importation = self.importation()
         self.average_price = self.price_calculation()
         self.parameters = self.generate_parameters()
 
-    def needed_energy(self):
-        """Return the amount of heat energy from gas and coal needed for the scenario (MBtu)."""
-        electric_energy = self.scenario.production[['Coal', 'Gas']].loc[start_year:end_year + 1]
+    def needed_energy(self, plan):
+        """Return the amount of heat energy from gas and coal needed for the plan (MBtu)."""
+        electric_energy = plan.production[['Coal', 'Gas']].loc[start_year:end_year + 1]
         useful_heat_rate = heat_rate[['Coal', 'Gas']]
         needed_production = pd.DataFrame(
             electric_energy.values * useful_heat_rate.values,
@@ -114,7 +114,7 @@ class price_fuel():
         """Describe Coal supply of the electric system."""
         (self.needed_production['Coal'] / MBtu).plot(
             ax=ax,
-            title="Coal supply for the electric system (MMBTu) in \n" + str(self.scenario) + '\n',
+            title="Coal supply for the electric system (MMBTu) in \n" + self.plan_name + '\n',
             label="Coal needs")
         (self.loc_production["Coal"] / MBtu).plot(ax=ax, label="Coal producted in Vietnam")
         (self.needed_importation["Coal"] / MBtu).plot(ax=ax, label="Coal imported")
@@ -123,7 +123,7 @@ class price_fuel():
         """Describe Coal price of the electric system."""
         (self.average_price['Coal'] * MBtu).plot(
             ax=ax,
-            title="Coal price (USD/MMBTu) in \n" + str(self.scenario) + '\n',
+            title="Coal price (USD/MMBTu) in \n" + self.plan_name + '\n',
             label="Average price of Coal for the electric system")
         (self.loc_prices['Coal'] * MBtu).plot(ax=ax, label="Coal produced in Vietnam")
         (self.import_prices["Coal"] * MBtu).plot(ax=ax, label="Imported Coal (Australia)")
@@ -132,7 +132,7 @@ class price_fuel():
         """Describe Gas supply of the electric system."""
         (self.needed_production['Gas'] / MBtu).plot(
             ax=ax,
-            title="Gas supply for the electric system (MMBTu) in \n" + str(self.scenario) + '\n',
+            title="Gas supply for the electric system (MMBTu) in \n" + self.plan_name + '\n',
             label="Gas needs")
         (self.loc_production["Gas"] / MBtu).plot(ax=ax, label="Gas producted in Vietnam")
         (self.needed_importation["Gas"] / MBtu).plot(ax=ax, label="Gas imported")
@@ -140,7 +140,7 @@ class price_fuel():
     def plot_gas_price(self, ax):
         """Describe Gas price of the electric system."""
         (self.average_price['Gas'] * MBtu).plot(
-            ax=ax, title="Gas price (USD/MMBTu) in \n" + str(self.scenario) + '\n',
+            ax=ax, title="Gas price (USD/MMBTu) in \n" + self.plan_name + '\n',
             label="Average price of Gas for the electric system")
         (self.loc_prices['Gas'] * MBtu).plot(ax=ax, label="Gas produced in Vietnam")
         (self.import_prices["Gas"] * MBtu).plot(ax=ax, label="Imported Gas (Japan)")
@@ -199,7 +199,7 @@ class price_fuel():
             columns=['Domestic', 'Imported', 'Average'])
 
         return (
-            "\n Coal and Gas origin and prices for " + str(self.scenario) + '\n\n'
+            "\n Coal and Gas origin and prices for " + self.plan_name + '\n\n'
             "Coal supply (in E+8 MMBtu)\n"
             + str(supply_coal.loc[milestones].round(1)) + '\n\n'
             + "Coal prices (in $/MMBtu)\n"

@@ -19,7 +19,7 @@ all-parallel:
 
 all: $(tables) $(figures)
 
-table-parameters.fwf: param_reference.txt
+table-parameters.fwf: parameter_reference.txt
 	head -13 $< | tail -11 > $@
 
 table-comparison.fwf: Run.txt
@@ -71,7 +71,7 @@ clean:
 
 cleaner: clean
 	find . -type f -name '*.pyc' -delete
-	rm -f Run.txt param_reference.txt table-price-run.txt tmp.ps
+	rm -f Run.txt parameter_reference.txt table-price-run.txt tmp.ps
 	rm -rf __pycache__
 	rm -f *.bak
 	rm -rf .coverage coverage.xml htmlcov

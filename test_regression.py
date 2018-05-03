@@ -9,7 +9,7 @@
 
 #import pytest
 import numpy as np
-from param_reference import reference
+from parameter_reference import reference
 from plan_baseline import baseline
 from plan_moreGas import moreGas
 from plan_withCCS import withCCS

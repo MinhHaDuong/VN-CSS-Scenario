@@ -14,7 +14,7 @@ from init import kW, MW, USD, MUSD, GUSD, GWh, MWh, TWh, kWh, Btu, MBtu, TBtu, g
 
 from plan_baseline import baseline
 from plan_withCCS import withCCS
-from param_reference import reference
+from parameter_reference import reference
 
 # %% Accounting functions
 

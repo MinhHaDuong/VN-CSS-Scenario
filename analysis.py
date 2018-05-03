@@ -13,7 +13,7 @@ import sys
 from init import discountor
 from plan_baseline import baseline
 from plan_withCCS import withCCS
-from param_reference import reference
+from parameter_reference import reference
 from Run import RunPair
 
 HIDISCOUNT = reference._replace(discount_rate=.08)
