@@ -1,6 +1,7 @@
-# Assessment of CCS scenario for Vietnam with power development model
+# Assessment of power development plans for Vietnam
+# The model is a recursive simulation based on OSEMOSYS equations
 #
-# (c) Minh Ha-Duong, An Ha Truong 2016, 2017
+# (c) Minh Ha-Duong, An Ha Truong 2016, 2017, 2018
 # minh.haduong@gmail.com
 # Creative Commons Attribution-ShareAlike 4.0 International
 #
@@ -9,15 +10,24 @@ PYTHON = python3
 COVERAGE = python3-coverage
 PYTEST = py.test-3
 
-tables = table-parameters.fwf table-comparison.fwf price_fuel.txt prices_data_international.txt price_LCOE_run.txt
+# Tables and figures for the paper on CCS
+tables-CCS = table-parameters.fwf table-comparison.fwf
+figures-CCS = plan_baseline.pdf plan_withCCS.pdf figure-capacities.pdf figure-capacities.png
 
-figures = plan_baseline.pdf plan_withCCS.pdf plan_moreGas.pdf figure-capacities.pdf figure-capacities.png figure_prices.pdf price_fuel.pdf price_LCOE_run.pdf
+# Tables and figures for the paper on sensitivity analysis to international prices of coal and gas
+tables-moreGas = price_fuel.txt prices_data_international.txt price_LCOE_run.txt
+figures-moreGas = plan_moreGas.pdf  figure_prices.pdf price_fuel.pdf price_LCOE_run.pdf
 
 
 all-parallel:
 	make all -j
 
-all: $(tables) $(figures)
+all: $(all-CCS) $(all-moreGas)
+
+all-CCS: $(tables-CCS) $(figures-CCS)
+
+all-moreGas: $(tables-moreGas) $(figures-moreGas)
+
 
 table-parameters.fwf: parameter_reference.txt
 	head -13 $< | tail -11 > $@
@@ -66,12 +76,13 @@ codestyle:
 
 
 clean:
-	rm -f $(tables)
-	rm -f $(figures)
+	rm -f $(tables-CCS) $(tables-moreGas)
+	rm -f $(figures-CCS) $(figures-moreGas)
+	rm -f Run.txt parameter_reference.txt
 
 cleaner: clean
 	find . -type f -name '*.pyc' -delete
-	rm -f Run.txt parameter_reference.txt table-price-run.txt tmp.ps
+	rm -f table-price-run.txt tmp.ps
 	rm -rf __pycache__
 	rm -f *.bak
 	rm -rf .coverage coverage.xml htmlcov
