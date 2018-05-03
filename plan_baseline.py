@@ -34,7 +34,7 @@ from data_PDP7A import (PDP7A_annex1,
                         production_PDP7A,
                         capacity_factor_PDP7A)
 
-from PowerPlan import PowerPlan
+from Plan import Plan
 
 # %%
 
@@ -171,7 +171,7 @@ net_import = extend("Import", 7000, "Import", production_past, production_PDP7A)
 
 # %% Main statement
 
-baseline = PowerPlan(additions, retirement, capacityfactor, net_import)
+baseline = Plan(additions, retirement, capacityfactor, net_import)
 baseline.__doc__ = "Baseline - PDP7A extended"
 
 if __name__ == '__main__':

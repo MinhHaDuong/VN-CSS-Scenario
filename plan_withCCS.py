@@ -35,7 +35,7 @@ python3 plan_withCCS.py plot filename.[pdf|png|...]
 import sys
 
 from init import pd, end_year, technologies
-from PowerPlan import PowerPlan
+from Plan import Plan
 
 from plan_baseline import baseline
 
@@ -94,7 +94,7 @@ savedGasCCS = (bioCCS_ramp
 additions.loc[retrofit_period, "GasCCS"] -= savedGasCCS
 
 
-withCCS = PowerPlan(additions, retirement[technologies],
+withCCS = Plan(additions, retirement[technologies],
                     baseline.capacity_factor, baseline.net_import)
 withCCS.__doc__ = "With CCS"
 

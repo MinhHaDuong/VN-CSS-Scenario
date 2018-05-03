@@ -16,10 +16,10 @@ from init import GWh, TWh, MW, GW
 # %%
 
 
-class PowerPlan(namedtuple('PowerPlan',
+class Plan(namedtuple('Plan',
                            ['additions', 'retirement', 'capacity_factor', 'net_import',
                             'capacities', 'production'])):
-    """A power development program."""
+    """A power development plan."""
 
     def __new__(cls, additions, retirement, capacity_factor, net_import):
         capacities = (additions - retirement).cumsum()
