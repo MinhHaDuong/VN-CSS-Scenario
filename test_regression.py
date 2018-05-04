@@ -11,15 +11,15 @@
 import numpy as np
 from parameter_reference import reference
 from plan_baseline import baseline
-from plan_moreGas import moreGas
-from plan_withCCS import withCCS
+from plan_more_gas import moreGas
+from plan_with_ccs import withCCS
 from prices_data_local import local_prices
 from production_data_local import local_production
 from Run import RunPair
 from prices_data_international import import_prices_path, price_gas, price_coal
 from price_fuel import price_fuel
-from run_sensitivity_LCOE import multiple_LCOE
-from sensitivity_analysis_CCS import RUNPAIRS
+from run_sensitivity_lcoe import multiple_LCOE
+from run_sensitivity_analysis_ccs import RUNPAIRS
 # pylint and pytest known compatibility bug
 # pylint: disable=redefined-outer-name
 

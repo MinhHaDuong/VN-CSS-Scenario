@@ -1,17 +1,15 @@
 # encoding: utf-8
 #
-# (c) Minh Ha-Duong  2018
+# (c) Minh Ha-Duong  2017
 # minh.haduong@gmail.com
 # Creative Commons Attribution-ShareAlike 4.0 International
 #
-"""Compare the baseline vs. the more gas scenario.
-
-Coal and gas are costed at domestic prices."""
+"""Assess the scenarios."""
 
 import sys
 
 from plan_baseline import baseline
-from plan_moreGas import moreGas
+from plan_with_ccs import withCCS
 from parameter_reference import reference
 
 from Run import RunPair
@@ -24,5 +22,5 @@ if __name__ == '__main__':
 ***             Results                ***
 ******************************************
 """)
-        PAIR = RunPair(baseline, moreGas, reference)
-        print(PAIR.summary(["Baseline", "More gas", "difference"]))
+        PAIR = RunPair(baseline, withCCS, reference)
+        print(PAIR.summary(["Baseline", "High CCS", "difference"]))

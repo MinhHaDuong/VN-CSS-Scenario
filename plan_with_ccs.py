@@ -28,8 +28,8 @@ The electricity generation sector is an active player for CO2 transport activiti
 
 Usage:
 
-python3 plan_withCCS.py summarize
-python3 plan_withCCS.py plot filename.[pdf|png|...]
+python3 plan_with_ccs.py summarize
+python3 plan_with_ccs.py plot filename.[pdf|png|...]
 """
 
 import sys

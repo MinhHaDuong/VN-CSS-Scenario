@@ -11,12 +11,12 @@ COVERAGE = python3-coverage
 PYTEST = py.test-3
 
 # Tables and figures for the paper on CCS
-tables-CCS = table-parameters.fwf table-comparison.fwf run_sensitivity_analysis_CCS.txt
-figures-CCS = plan_baseline.pdf plan_withCCS.pdf figure_capacities.pdf figure_capacities.png
+tables-CCS = table-parameters.fwf table-comparison.fwf run_sensitivity_analysis_ccs.txt
+figures-CCS = plan_baseline.pdf plan_with_ccs.pdf figure_capacities.pdf figure_capacities.png
 
 # Tables and figures for the paper on sensitivity analysis to international prices of coal and gas
-tables-moreGas = price_fuel.txt prices_data_international.txt run_sensitivity_LCOE.txt run_baseline_vs_moreGas.txt
-figures-moreGas = plan_moreGas.pdf  figure_prices.pdf price_fuel.pdf run_sensitivity_LCOE.pdf
+tables-moreGas = price_fuel.txt prices_data_international.txt run_sensitivity_lcoe.txt run_baseline_vs_more_gas.txt
+figures-moreGas = plan_more_gas.pdf  figure_prices.pdf price_fuel.pdf run_sensitivity_lcoe.pdf
 
 
 all-parallel:
@@ -32,7 +32,7 @@ all-moreGas: $(tables-moreGas) $(figures-moreGas)
 table-parameters.fwf: parameter_reference.txt
 	head -13 $< | tail -11 > $@
 
-table-comparison.fwf: run_baseline_vs_CCS.txt
+table-comparison.fwf: run_baseline_vs_ccs.txt
 	head -26 $< | tail -16 > $@
 
 %.txt: %.py
@@ -78,7 +78,7 @@ codestyle:
 clean:
 	rm -f $(tables-CCS) $(tables-moreGas)
 	rm -f $(figures-CCS) $(figures-moreGas)
-	rm -f run_baseline_vs_CCS.txt parameter_reference.txt
+	rm -f run_baseline_vs_ccs.txt parameter_reference.txt
 
 cleaner: clean
 	find . -type f -name '*.pyc' -delete

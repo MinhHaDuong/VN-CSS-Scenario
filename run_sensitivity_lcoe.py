@@ -11,7 +11,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 from plan_baseline import baseline
-from plan_moreGas import moreGas
+from plan_more_gas import moreGas
 from price_fuel import price_fuel
 from prices_data_international import price_gas, price_coal
 from prices_data_local import local_prices

@@ -18,7 +18,7 @@ import matplotlib.pyplot as plt
 
 from init import MW, GW, plant_type
 from plan_baseline import baseline
-from plan_withCCS import withCCS
+from plan_with_ccs import withCCS
 
 
 def plot_capacity_mix(plan, ax, sources_toshow):

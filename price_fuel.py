@@ -18,7 +18,7 @@ import matplotlib.pyplot as plt
 from init import pd, start_year, end_year, sources, MBtu
 
 from plan_baseline import baseline
-from plan_moreGas import moreGas
+from plan_more_gas import moreGas
 
 from parameter_reference import discount_rate, plant_accounting_life, construction_cost, heat_rate
 from parameter_reference import fixed_operating_cost, variable_operating_cost, heat_price
