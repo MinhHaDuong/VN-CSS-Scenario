@@ -64,3 +64,7 @@ ignore=W503,E402
 
 7. Files in `tables.tocompare` are used for regression testing. Use `make reg_tests_reset` to populate/update it.
 
+## Code quality:
+[![codebeat badge](https://codebeat.co/badges/37b259d7-4684-43a4-a78a-662f834ce83e)](https://codebeat.co/projects/github-com-minhhaduong-vn-ccs-scenario-master)
+
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/a10c950d7cb24809bbe6d78552f7ffcf)](https://www.codacy.com/app/minh.haduong/VN-CSS-Scenario?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=MinhHaDuong/VN-CSS-Scenario&amp;utm_campaign=Badge_Grade)
