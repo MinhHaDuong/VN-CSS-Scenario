@@ -34,7 +34,7 @@ python3 plan_with_ccs.py plot filename.[pdf|png|...]
 
 import sys
 
-from init import pd, end_year, technologies
+from init import pd, END_YEAR, technologies
 from Plan import Plan
 
 from plan_baseline import baseline
@@ -45,57 +45,57 @@ additions, retirement = baseline.additions.copy(), baseline.retirement.copy()
 
 # %%
 
-pilot1_year = 2024
-pilot1_size = 250  # MW of gas-fired generation
-assert(additions.at[pilot1_year, "Gas"] > pilot1_size)
-additions.at[pilot1_year, "Gas"] -= pilot1_size
-additions.at[pilot1_year, "GasCCS"] += pilot1_size
+PILOT1_YEAR = 2024
+PILOT1_SIZE = 250  # MW of gas-fired generation
+assert(additions.at[PILOT1_YEAR, "Gas"] > PILOT1_SIZE)
+additions.at[PILOT1_YEAR, "Gas"] -= PILOT1_SIZE
+additions.at[PILOT1_YEAR, "GasCCS"] += PILOT1_SIZE
 
-pilot2_year = 2029
-pilot2_size = 750  # MW of gas-fired generation
-assert(additions.at[pilot2_year, "Gas"] > pilot2_size)
-additions.at[pilot2_year, "Gas"] -= pilot2_size
-additions.at[pilot2_year, "GasCCS"] += pilot2_size
+PILOT2_YEAR = 2029
+PILOT2_SIZE = 750  # MW of gas-fired generation
+assert(additions.at[PILOT2_YEAR, "Gas"] > PILOT2_SIZE)
+additions.at[PILOT2_YEAR, "Gas"] -= PILOT2_SIZE
+additions.at[PILOT2_YEAR, "GasCCS"] += PILOT2_SIZE
 
 # %%
 
-retrofit_start_year = 2035
-assert retrofit_start_year > pilot2_year
+RETROFIT_START_YEAR = 2035
+assert RETROFIT_START_YEAR > PILOT2_YEAR
 
-retrofit_period = range(retrofit_start_year, end_year + 1)
+RETROFIT_PERIOD = range(RETROFIT_START_YEAR, END_YEAR + 1)
 
 # Convert all other coal capacity to Coal CCS on 2035 - 2050
-retrofit_rate_coal = baseline.capacities.at[end_year, "Coal"] / len(retrofit_period)
-retirement.loc[retrofit_period, "Coal"] += retrofit_rate_coal
-additions.loc[retrofit_period, "CoalCCS"] = retrofit_rate_coal
+retrofit_rate_coal = baseline.capacities.at[END_YEAR, "Coal"] / len(RETROFIT_PERIOD)
+retirement.loc[RETROFIT_PERIOD, "Coal"] += retrofit_rate_coal
+additions.loc[RETROFIT_PERIOD, "CoalCCS"] = retrofit_rate_coal
 
 # Convert all other Gas capacity to Gas CCS on 2035 - 2050
-retrofit_rate_gas = ((baseline.capacities.at[end_year, "Gas"] - pilot1_size - pilot2_size
-                     - additions.loc[retrofit_period, "Gas"].sum()
-                      ) / len(retrofit_period))
-retirement.loc[retrofit_period, "Gas"] += retrofit_rate_gas
-additions.loc[retrofit_period, "GasCCS"] = retrofit_rate_gas
+retrofit_rate_gas = ((baseline.capacities.at[END_YEAR, "Gas"] - PILOT1_SIZE - PILOT2_SIZE
+                     - additions.loc[RETROFIT_PERIOD, "Gas"].sum()
+                      ) / len(RETROFIT_PERIOD))
+retirement.loc[RETROFIT_PERIOD, "Gas"] += retrofit_rate_gas
+additions.loc[RETROFIT_PERIOD, "GasCCS"] = retrofit_rate_gas
 
 # Install new Gas CCS plants instead of simple Gas
-additions.loc[retrofit_period, "GasCCS"] += additions.loc[retrofit_period, "Gas"]
-additions.loc[retrofit_period, "Gas"] = 0
+additions.loc[RETROFIT_PERIOD, "GasCCS"] += additions.loc[RETROFIT_PERIOD, "Gas"]
+additions.loc[RETROFIT_PERIOD, "Gas"] = 0
 
 # Ramp up some BioCCS, quadratically
-bioCCS_trend = 10    # The increase of annual capacity installed (MW / yr)
-bioCCS_2050 = bioCCS_trend * len(retrofit_period)
-bioCCS_ramp = pd.Series(range(0, bioCCS_2050, bioCCS_trend),
-                        retrofit_period)
-additions.loc[retrofit_period, "BioCCS"] = bioCCS_ramp
+BIOCCS_TREND = 10    # The increase of annual capacity installed (MW / yr)
+bioCCS_2050 = BIOCCS_TREND * len(RETROFIT_PERIOD)
+bioCCS_ramp = pd.Series(range(0, bioCCS_2050, BIOCCS_TREND),
+                        RETROFIT_PERIOD)
+additions.loc[RETROFIT_PERIOD, "BioCCS"] = bioCCS_ramp
 
-# Save a bit on Gas CCS, keeping the end_year generation unchanged
+# Save a bit on Gas CCS, keeping the END_YEAR generation unchanged
 savedGasCCS = (bioCCS_ramp
-               * baseline.capacity_factor.at[end_year, "BioCCS"]
-               / baseline.capacity_factor.at[end_year, "GasCCS"])
-additions.loc[retrofit_period, "GasCCS"] -= savedGasCCS
+               * baseline.capacity_factor.at[END_YEAR, "BioCCS"]
+               / baseline.capacity_factor.at[END_YEAR, "GasCCS"])
+additions.loc[RETROFIT_PERIOD, "GasCCS"] -= savedGasCCS
 
 
 withCCS = Plan(additions, retirement[technologies],
-                    baseline.capacity_factor, baseline.net_import)
+               baseline.capacity_factor, baseline.net_import)
 withCCS.__doc__ = "With CCS"
 
 if __name__ == '__main__':

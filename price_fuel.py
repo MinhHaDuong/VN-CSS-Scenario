@@ -15,14 +15,14 @@ import sys
 
 import numpy as np
 import matplotlib.pyplot as plt
-from init import pd, start_year, end_year, sources, MBtu
+from init import pd, START_YEAR, END_YEAR, SOURCES, MBtu
 
 from plan_baseline import baseline
 from plan_more_gas import moreGas
 
-from parameter_reference import discount_rate, plant_accounting_life, construction_cost, heat_rate
+from parameter_reference import DISCOUNT_RATE, plant_accounting_life, construction_cost, heat_rate
 from parameter_reference import fixed_operating_cost, variable_operating_cost, heat_price
-from parameter_reference import emission_factor, capture_factor, carbon_price
+from parameter_reference import EMISSION_FACTOR, capture_factor, CARBON_PRICE
 
 from prices_data_local import local_prices
 from prices_data_international import import_prices_path, price_coal, price_gas
@@ -36,7 +36,7 @@ class price_fuel():
 
     def __init__(self, loc_prices, past_price_gas, past_price_coal, loc_production, plan):
 
-        self.index = list(range(start_year, end_year + 1))
+        self.index = list(range(START_YEAR, END_YEAR + 1))
         self.loc_prices = loc_prices
         self.import_prices = import_prices_path(past_price_gas, past_price_coal).import_prices
         self.loc_production = loc_production
@@ -50,7 +50,7 @@ class price_fuel():
 
     def needed_energy(self, plan):
         """Return the amount of heat energy from gas and coal needed for the plan (MBtu)."""
-        electric_energy = plan.production[['Coal', 'Gas']].loc[start_year:end_year + 1]
+        electric_energy = plan.production[['Coal', 'Gas']].loc[START_YEAR:END_YEAR + 1]
         useful_heat_rate = heat_rate[['Coal', 'Gas']]
         needed_production = pd.DataFrame(
             electric_energy.values * useful_heat_rate.values,
@@ -92,22 +92,22 @@ class price_fuel():
         """Generate parameters with different international prices forecasts at each run."""
         updated_heat_price = pd.DataFrame(columns=heat_price.columns, index=heat_price.index)
 
-        for fuel in sources:
+        for fuel in SOURCES:
             if fuel == "Coal" or fuel == "Gas":
                 updated_heat_price[fuel] = self.average_price[fuel] * MBtu
             else:
                 updated_heat_price[fuel] = heat_price[fuel]
 
-        updated_parameter = Parameter(discount_rate,
+        updated_parameter = Parameter(DISCOUNT_RATE,
                                       plant_accounting_life,
-                                      construction_cost[sources],
-                                      fixed_operating_cost[sources],
-                                      variable_operating_cost[sources],
+                                      construction_cost[SOURCES],
+                                      fixed_operating_cost[SOURCES],
+                                      variable_operating_cost[SOURCES],
                                       heat_rate,
                                       updated_heat_price,
-                                      emission_factor,
+                                      EMISSION_FACTOR,
                                       capture_factor,
-                                      carbon_price)
+                                      CARBON_PRICE)
         return updated_parameter
 
     def plot_coal_supply(self, ax):
@@ -172,7 +172,7 @@ class price_fuel():
 
     def summary(self):
         """Summary of Coal and Gas supply and prices."""
-        milestones = [start_year, 2020, 2025, 2030, 2040, 2050]
+        milestones = [START_YEAR, 2020, 2025, 2030, 2040, 2050]
 
         supply_coal = pd.DataFrame({
             'Domestic': self.loc_production['Coal'] / (10**8 * MBtu),

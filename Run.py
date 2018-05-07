@@ -7,8 +7,8 @@
 #"""Assess the scenarios."""
 """Define a model run and the tables comparing a pair of runs."""
 
-from init import pd, plant_type, sources
-from init import start_year, end_year, years, present_value
+from init import pd, PLANT_TYPE, SOURCES
+from init import START_YEAR, END_YEAR, YEARS, present_value
 from init import kW, MW, USD, MUSD, GUSD, GWh, MWh, TWh, kWh, Btu, MBtu, TBtu, g, t, kt, Mt, Gt
 
 # %% Accounting functions
@@ -26,7 +26,7 @@ def residual_value(additions, plant_accounting_life, technology):
     for i in range(min(lifetime, n)):
         # On average, plant opens middle of the year
         remaining_fraction.iloc[n - i - 1] = 1 - (i + 0.5) / lifetime
-    result = pd.Series(0, index=years, name=technology)
+    result = pd.Series(0, index=YEARS, name=technology)
     result[2050] = (remaining_fraction * additions[technology]).sum()
     return result
 
@@ -49,9 +49,9 @@ class Run():
 
         def pv(variable):
             """Present value of a variable summed across technologies."""
-            return present_value(variable, parameter.discount_rate).sum()
+            return present_value(variable, parameter.DISCOUNT_RATE).sum()
 
-        self.total_production = pv(plan.production[sources])
+        self.total_production = pv(plan.production[SOURCES])
 
         self.investment = (plan.additions * MW
                            * parameter.construction_cost * USD / kW
@@ -61,14 +61,14 @@ class Run():
         self.salvage_value = pd.concat([residual_value(plan.additions,
                                                        parameter.plant_accounting_life,
                                                        fuel)
-                                        for fuel in sources],
+                                        for fuel in SOURCES],
                                        axis=1)
         self.total_salvage_value = pv(self.salvage_value)
 
-        self.fixed_OM_cost = (plan.capacities * MW *
+        self.fixed_om_cost = (plan.capacities * MW *
                               parameter.fixed_operating_cost * USD / kW
                               / MUSD)
-        self.total_fixed_OM_cost = pv(self.fixed_OM_cost)
+        self.total_fixed_om_cost = pv(self.fixed_om_cost)
 
         self.variable_OM_cost = (plan.production * GWh
                                  * parameter.variable_operating_cost * USD / MWh
@@ -84,13 +84,13 @@ class Run():
         self.total_fuel_cost = pv(self.fuel_cost)
 
         self.total_cost = (self.total_investment - self.total_salvage_value
-                           + self.total_fixed_OM_cost + self.total_variable_OM_cost
+                           + self.total_fixed_om_cost + self.total_variable_OM_cost
                            + self.total_fuel_cost)
 
         self.lcoe = self.total_cost / self.total_production
 
         self.emissions = (plan.production * GWh
-                          * parameter.emission_factor * g / kWh
+                          * parameter.EMISSION_FACTOR * g / kWh
                           / kt)
         self.emissions["Total"] = self.emissions.sum(axis=1)
         self.total_emissions = self.emissions["Total"].sum() * kt / Gt
@@ -102,7 +102,7 @@ class Run():
         self.total_capture = self.capture["Total"].sum() * Mt / Gt
 
         self.external_cost = (self.emissions["Total"] * kt
-                              * parameter.carbon_price * USD / t
+                              * parameter.CARBON_PRICE * USD / t
                               / MUSD)
         self.total_external_cost = pv(self.external_cost)
 
@@ -129,7 +129,7 @@ class Run():
         print()
         print(self.total())
         print()
-        print("GHG emissions over ", start_year, "-", end_year, "by source (Mt CO2eq)")
+        print("GHG emissions over ", START_YEAR, "-", END_YEAR, "by source (Mt CO2eq)")
         print()
         print(self.emission_sum())
 
@@ -144,7 +144,7 @@ class Run():
         d["Total cost"] = bnUSD(self.total_cost)
         d[" Construction"] = bnUSD(self.total_investment)
         d[" Fuel cost"] = bnUSD(self.total_fuel_cost)
-        d[" O&M"] = bnUSD(self.total_fixed_OM_cost + self.total_variable_OM_cost)
+        d[" O&M"] = bnUSD(self.total_fixed_om_cost + self.total_variable_OM_cost)
         d[" Salvage value"] = bnUSD(-self.total_salvage_value)
         d["CO2 emissions"] = [round(self.total_emissions, 1), "GtCO2eq"]
         d["CO2 capture"] = [round(self.total_capture, 1), "GtCO2"]
@@ -156,7 +156,7 @@ class Run():
 
     def carbon_intensity(self):
         """Dataframe tabulating the CO2 intensity of electricity (g/kWh)."""
-        key_years = [start_year, 2030, 2050]
+        key_years = [START_YEAR, 2030, 2050]
         p = self.plan.production.loc[key_years, 'Total']
         p.name = "GWh"
         e = self.emissions.loc[key_years, 'Total']
@@ -174,7 +174,7 @@ class Run():
 
     def emission_sum(self):
         """Dataframe tabulating the total emissions by technology during the model run."""
-        s = self.emissions[sources].sum() * kt / Mt
+        s = self.emissions[SOURCES].sum() * kt / Mt
         s = s.round()
         s.name = str(self)
         return s
@@ -184,25 +184,25 @@ class Run():
         return (str(self) + " - Detailed results tables"
                 + "\n\n"
                 + "Construction costs (M$)\n"
-                + str(self.investment.loc[start_year:, plant_type].round())
+                + str(self.investment.loc[START_YEAR:, PLANT_TYPE].round())
                 + "\n\n"
                 + "Fixed operating costs (M$)\n"
-                + str(self.fixed_OM_cost.loc[start_year:, plant_type].round())
+                + str(self.fixed_om_cost.loc[START_YEAR:, PLANT_TYPE].round())
                 + "\n\n"
                 + "Variable operating costs (M$)\n"
-                + str(self.variable_OM_cost.loc[start_year:, sources].round())
+                + str(self.variable_OM_cost.loc[START_YEAR:, SOURCES].round())
                 + "\n\n"
                 + "Heat used (TBtu)\n"
-                + str(self.heat_used.loc[start_year:, sources].round())
+                + str(self.heat_used.loc[START_YEAR:, SOURCES].round())
                 + "\n\n"
                 + "Fuel costs (M$)\n"
-                + str(self.fuel_cost.loc[start_year:, sources].round())
+                + str(self.fuel_cost.loc[START_YEAR:, SOURCES].round())
                 + "\n\n"
                 + "GHG emissions (ktCO2eq including CO2, CH4 and N20)\n"
-                + str(self.emissions.loc[start_year:, sources + ["Total"]].round())
+                + str(self.emissions.loc[START_YEAR:, SOURCES + ["Total"]].round())
                 + "\n\n"
                 + "CO2 capture (kt CO2)\n"
-                + str(self.capture.loc[start_year:,
+                + str(self.capture.loc[START_YEAR:,
                                        ["CoalCCS", "GasCCS", "BioCCS", "Total"]].round())
                 )
 

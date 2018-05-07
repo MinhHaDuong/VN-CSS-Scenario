@@ -60,17 +60,17 @@ show = print if VERBOSE else lambda *a, **k: None
 
 # %% Rows
 
-start_year = 2016
-end_year = 2050
-years = range(start_year, end_year + 1)
-n_year = len(years)
+START_YEAR = 2016
+END_YEAR = 2050
+YEARS = range(START_YEAR, END_YEAR + 1)
+N_YEARS = len(YEARS)
 
 
 @lru_cache(maxsize=32)
 def discountor(discount_rate):
     """Return a vector V such that the scalar product A.V is the present value of series A."""
-    return pd.Series(data=np.logspace(0, n_year - 1, n_year, base=1 / (1 + discount_rate)),
-                     index=years)
+    return pd.Series(data=np.logspace(0, N_YEARS - 1, N_YEARS, base=1 / (1 + discount_rate)),
+                     index=YEARS)
 
 
 def present_value(series, discount_rate):
@@ -87,13 +87,13 @@ def discount(value, year, discount_rate):
 # Nuclear is presently out of the power planning discussion in Vietnam
 # CCS also, but that's the point of our study.
 
-plant_type = ["Coal", "Gas", "Oil",
+PLANT_TYPE = ["Coal", "Gas", "Oil",
               "BigHydro", "SmallHydro", "Biomass", "Wind", "Solar",
               "CoalCCS", "GasCCS", "BioCCS"]
 
-sources = plant_type + ["Import"]
+SOURCES = PLANT_TYPE + ["Import"]
 
-technologies = sources + ["PumpedStorage"]
+technologies = SOURCES + ["PumpedStorage"]
 
 
 def addcol_Renewable(container):
@@ -137,10 +137,10 @@ MM3 = 10**6
 
 #%% Calorific power
 
-calorific_power = {}
-calorific_power["Coal_local"] = 5500 * Mkal / t
-calorific_power["Coal_international"] = 6700 * Mkal / t
-calorific_power["Gas_local"] = 35700
+CALORIFIC_POWER = {}
+CALORIFIC_POWER["Coal_local"] = 5500 * Mkal / t
+CALORIFIC_POWER["Coal_international"] = 6700 * Mkal / t
+CALORIFIC_POWER["Gas_local"] = 35700
 
 #
 # def timefunc(f):

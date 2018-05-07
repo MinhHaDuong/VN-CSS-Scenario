@@ -6,7 +6,8 @@
 #
 """Compare the baseline vs. the more gas scenario.
 
-Coal and gas are costed at domestic prices."""
+Coal and gas are costed at domestic prices.
+"""
 
 import sys
 
@@ -19,10 +20,5 @@ from Run import RunPair
 
 if __name__ == '__main__':
     if (len(sys.argv) == 2) and (sys.argv[1] == "summarize"):
-        print("""
-******************************************
-***             Results                ***
-******************************************
-""")
         PAIR = RunPair(baseline, moreGas, reference)
         print(PAIR.summary(["Baseline", "More gas", "difference"]))

@@ -14,7 +14,7 @@ from plan_baseline import baseline
 from prices_data_international import price_gas, price_coal
 from production_data_local import local_production
 from parameter_reference import heat_rate
-from init import pd, start_year, end_year
+from init import pd, START_YEAR, END_YEAR
 
 
 def test_international_dependency():
@@ -22,23 +22,23 @@ def test_international_dependency():
     international price."""
 
     # Local production is null
-    production = [0] * (end_year + 1 - start_year)
+    production = [0] * (END_YEAR + 1 - START_YEAR)
     nul_production = pd.DataFrame({
         'Coal': production,
         'Gas': production},
-        index=range(start_year, end_year + 1))
+        index=range(START_YEAR, END_YEAR + 1))
 
     # Generate random local prices to test the independence of the result
     local_price_gas = []
     local_price_coal = []
-    for _ in range(start_year, end_year + 1):
+    for _ in range(START_YEAR, END_YEAR + 1):
         local_price_gas.append(randint(0, 100))
         local_price_coal.append(randint(0, 100))
 
     local_prices_compare = pd.DataFrame({
         'Coal': local_price_coal,
         'Gas': local_price_gas},
-        index=range(start_year, end_year + 1))
+        index=range(START_YEAR, END_YEAR + 1))
 
     #Create the two objects to compare
     np.random.seed(0)
@@ -54,7 +54,7 @@ def test_local_dependency():
     """Check that if all the production is local, the average price is equal to the
     local price."""
     # Local production is equal to energy needs. There is no importation
-    electric_production = baseline.production[['Coal', 'Gas']].loc[start_year:end_year + 1]
+    electric_production = baseline.production[['Coal', 'Gas']].loc[START_YEAR:END_YEAR + 1]
     useful_heat_rate = heat_rate[['Coal', 'Gas']]
 
     needed_production = pd.DataFrame(

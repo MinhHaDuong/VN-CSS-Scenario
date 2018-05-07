@@ -16,7 +16,7 @@ import sys
 
 import numpy as np
 from scipy.stats import norm
-from init import pd, start_year, end_year, t, MBtu, calorific_power
+from init import pd, START_YEAR, END_YEAR, t, MBtu, CALORIFIC_POWER
 
 international_past_data = {}
 
@@ -37,7 +37,7 @@ international_past_data["ini_year_Coal"] = 1970
 #international_past_data["ini_year_Coal"] = 1960
 
 #%%Monte Carlo characteristics : 35 forcasted prices from 2016 to 2050
-for_values = end_year - start_year + 1
+for_values = END_YEAR - START_YEAR + 1
 
 
 #Collect of data
@@ -46,7 +46,7 @@ import_prices_data = pd.read_csv(international_past_data["path_data"], index_col
 import_prices_data.columns = ["Gas", "Coal"]
 
 x = np.array(import_prices_data.index)
-y_coal = np.array(import_prices_data.Coal) / (calorific_power["Coal_international"] * t)
+y_coal = np.array(import_prices_data.Coal) / (CALORIFIC_POWER["Coal_international"] * t)
 y_gas = np.array(import_prices_data.Gas) / MBtu
 
 price_gas = pd.DataFrame({
@@ -55,7 +55,7 @@ price_gas = pd.DataFrame({
 
 price_coal = pd.DataFrame({
     'Price_Coal': import_prices_data['Coal']}).loc[
-    international_past_data["ini_year_Coal"]:2016] / (calorific_power["Coal_international"] * t)
+    international_past_data["ini_year_Coal"]:2016] / (CALORIFIC_POWER["Coal_international"] * t)
 
 coal = []
 gas = []
@@ -108,7 +108,7 @@ class import_prices_path():
         self.import_prices = pd.DataFrame({
             'Coal': self.forecast_price[1],
             'Gas': self.forecast_price[0]},
-            index=range(start_year, end_year + 1))
+            index=range(START_YEAR, END_YEAR + 1))
 
     def realized_pairwise_correlation(self):
         """Calculate the correlation factor of past data."""
@@ -152,9 +152,9 @@ class import_prices_path():
 
         for_coal = []
         for_gas = []
-        for i in range(start_year, end_year + 1):
-            for_coal.append(price_list[1][i - start_year][0])
-            for_gas.append(price_list[0][i - start_year][0])
+        for i in range(START_YEAR, END_YEAR + 1):
+            for_coal.append(price_list[1][i - START_YEAR][0])
+            for_gas.append(price_list[0][i - START_YEAR][0])
 
         return for_gas, for_coal
 

@@ -16,7 +16,7 @@ The output formats available depend on the backend being used.
 import sys
 import matplotlib.pyplot as plt
 
-from init import MW, GW, plant_type
+from init import MW, GW, PLANT_TYPE
 from plan_baseline import baseline
 from plan_with_ccs import withCCS
 
@@ -38,9 +38,9 @@ def plot_capacity_mix(plan, ax, sources_toshow):
 fig, axarr = plt.subplots(2, 1, figsize=[8, 12])
 fig.suptitle("Generation capacity by plant type, 1975 - 2050", fontsize=15)
 
-plot_capacity_mix(baseline, axarr[0], plant_type[0:8])
+plot_capacity_mix(baseline, axarr[0], PLANT_TYPE[0:8])
 
-plot_capacity_mix(withCCS, axarr[1], plant_type)
+plot_capacity_mix(withCCS, axarr[1], PLANT_TYPE)
 
 fig.tight_layout()
 plt.subplots_adjust(top=0.94)

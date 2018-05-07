@@ -36,17 +36,17 @@ since the capacity factors are not comparable, neither are the investment costs
 "Coal CCS" has a lower efficiency (higher heat rate) than "Coal" of same capacity
 """
 
-from init import pd, show, plant_type, sources, addcol_Renewable, addcol_Renewable4
+from init import pd, show, PLANT_TYPE, SOURCES, addcol_Renewable, addcol_Renewable4
 
 
 # %% Read data from EVN 2016 activity report
 # Historical capacity addition
 
-capacity_additions_past = pd.read_fwf("data/capacity_additions_past.txt")
+CAPACITY_ADDITIONS_PAST = pd.read_fwf("data/capacity_additions_past.txt")
 
-show(capacity_additions_past)
+show(CAPACITY_ADDITIONS_PAST)
 
-capacity_2015_EVN = capacity_additions_past.groupby(["fuel"]).capacity_MW.sum()
+capacity_2015_EVN = CAPACITY_ADDITIONS_PAST.groupby(["fuel"]).capacity_MW.sum()
 # show("SummaryCapacity in 2015")
 # show(capacity_2015)
 
@@ -63,9 +63,9 @@ capacity_2015_EVN["Renewable4"] = (capacity_2015_EVN.SmallHydro
                                    + capacity_2015_EVN.Biomass)
 
 
-capacity_past = capacity_additions_past.groupby(["year", "fuel"]).capacity_MW.sum()
-capacity_past = capacity_past .unstack().fillna(0)
-capacity_past.drop("Dummy", axis=1, inplace=True)
+CAPACITY_PAST = CAPACITY_ADDITIONS_PAST.groupby(["year", "fuel"]).capacity_MW.sum()
+CAPACITY_PAST = CAPACITY_PAST .unstack().fillna(0)
+CAPACITY_PAST.drop("Dummy", axis=1, inplace=True)
 
 
 def smooth(s):
@@ -94,38 +94,38 @@ def smooth(s):
     return pd.Series(data, s.index)
 
 
-capacity_past.InterHydro = smooth(capacity_past.InterHydro)
-capacity_past.SmallHydro = smooth(capacity_past.SmallHydro)
-capacity_past.Oil = smooth(capacity_past.Oil)
+CAPACITY_PAST.InterHydro = smooth(CAPACITY_PAST.InterHydro)
+CAPACITY_PAST.SmallHydro = smooth(CAPACITY_PAST.SmallHydro)
+CAPACITY_PAST.Oil = smooth(CAPACITY_PAST.Oil)
 
-capacity_past["Solar"] = 0
-capacity_past["Import"] = 0
-capacity_past["PumpedStorage"] = 0
-capacity_past["CoalCCS"] = 0
-capacity_past["GasCCS"] = 0
-capacity_past["BioCCS"] = 0
+CAPACITY_PAST["Solar"] = 0
+CAPACITY_PAST["Import"] = 0
+CAPACITY_PAST["PumpedStorage"] = 0
+CAPACITY_PAST["CoalCCS"] = 0
+CAPACITY_PAST["GasCCS"] = 0
+CAPACITY_PAST["BioCCS"] = 0
 
-capacity_past["BigHydro"] = (capacity_past.LargeHydro
-                             + capacity_past.InterHydro)
+CAPACITY_PAST["BigHydro"] = (CAPACITY_PAST.LargeHydro
+                             + CAPACITY_PAST.InterHydro)
 
-capacity_past["Hydro"] = (capacity_past.BigHydro
-                          + capacity_past.SmallHydro)
+CAPACITY_PAST["Hydro"] = (CAPACITY_PAST.BigHydro
+                          + CAPACITY_PAST.SmallHydro)
 
-addcol_Renewable(capacity_past)
-addcol_Renewable4(capacity_past)
+addcol_Renewable(CAPACITY_PAST)
+addcol_Renewable4(CAPACITY_PAST)
 
 show("""
 Vietnam historical capacity additions by fuel type (MW)
 Source: Capacities listed in EVN activity report 2016, dated by internet search
 """)
-show(capacity_past[plant_type])
+show(CAPACITY_PAST[PLANT_TYPE])
 show()
 
 show("""
 Vietnam historical generation capacity by fuel type (MW)
 Source: Capacities listed in EVN activity report 2016, dated by internet search
 """)
-show(capacity_past[plant_type].cumsum())
+show(CAPACITY_PAST[PLANT_TYPE].cumsum())
 show()
 
 show("""
@@ -133,32 +133,32 @@ Vietnam historical generation capacity by fuel type (MW)
 Small hydro included in Renewable4
 """)
 
-show(capacity_past[["Coal", "Gas", "Oil", "BigHydro", "Renewable4"]].cumsum())
+show(CAPACITY_PAST[["Coal", "Gas", "Oil", "BigHydro", "Renewable4"]].cumsum())
 show()
 
 show("""
 Vietnam historical generation capacity by fuel type (MW)
 Small hydro included in Hydro
 """)
-show(capacity_past[["Coal", "Gas", "Oil", "Hydro", "Renewable"]].cumsum())
+show(CAPACITY_PAST[["Coal", "Gas", "Oil", "Hydro", "Renewable"]].cumsum())
 show()
 
 
 # %% read data from International Energy Agency
 
-production_past = pd.read_csv("data/IEA/ElectricityProduction.csv", header=5, index_col=0)
+PRODUCTION_PAST = pd.read_csv("data/IEA/ElectricityProduction.csv", header=5, index_col=0)
 
-production_past["Solar"] = 0
-addcol_Renewable(production_past)
-production_past["SmallHydro"] = (production_past.Hydro *
-                                 capacity_past.SmallHydro / capacity_past.Hydro)
-production_past["SmallHydro"] = production_past["SmallHydro"].astype(int)
-production_past["BigHydro"] = production_past.Hydro - production_past.SmallHydro
-production_past["Import"] = production_past.Imports + production_past.Exports
+PRODUCTION_PAST["Solar"] = 0
+addcol_Renewable(PRODUCTION_PAST)
+PRODUCTION_PAST["SmallHydro"] = (PRODUCTION_PAST.Hydro *
+                                 CAPACITY_PAST.SmallHydro / CAPACITY_PAST.Hydro)
+PRODUCTION_PAST["SmallHydro"] = PRODUCTION_PAST["SmallHydro"].astype(int)
+PRODUCTION_PAST["BigHydro"] = PRODUCTION_PAST.Hydro - PRODUCTION_PAST.SmallHydro
+PRODUCTION_PAST["Import"] = PRODUCTION_PAST.Imports + PRODUCTION_PAST.Exports
 
-production_past["CoalCCS"] = 0
-production_past["GasCCS"] = 0
-production_past["BioCCS"] = 0
+PRODUCTION_PAST["CoalCCS"] = 0
+PRODUCTION_PAST["GasCCS"] = 0
+PRODUCTION_PAST["BioCCS"] = 0
 
 
 # %% Estimates 2015 production by fuel type
@@ -200,7 +200,7 @@ production_2015["CoalCCS"] = 0
 production_2015["GasCCS"] = 0
 production_2015["BioCCS"] = 0
 
-production_past = production_past.append(production_2015)
+PRODUCTION_PAST = PRODUCTION_PAST.append(production_2015)
 
 show("""
 Vietnam electricity production by fuel type (GWh)
@@ -209,16 +209,16 @@ Source GiZ citing Institute of Energy for 2015
 Hydro production divided between small and big proportional to capacity
 Imports are net of exports
 """)
-show(production_past[sources])
+show(PRODUCTION_PAST[SOURCES])
 show()
 
 # %%
 
-capacity_factor_past = production_past / capacity_past.cumsum() * 1000 / 8760
+capacity_factor_past = PRODUCTION_PAST / CAPACITY_PAST.cumsum() * 1000 / 8760
 capacity_factor_past = capacity_factor_past.loc[1990:]
 
 show("""
 Vietnam historical capacity factors by fuel type
 Source: author
 """)
-show(capacity_factor_past[plant_type].drop("Solar", axis=1))
+show(capacity_factor_past[PLANT_TYPE].drop("Solar", axis=1))

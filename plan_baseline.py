@@ -24,9 +24,9 @@ python3 plan_baseline.py plot filename.[pdf|png|...]
 import sys
 
 from init import pd, VERBOSE, show
-from init import plant_type, addcol_Renewable4
+from init import PLANT_TYPE, addcol_Renewable4
 
-from data_past import capacity_past, production_past, capacity_factor_past, capacity_2015_EVN
+from data_past import CAPACITY_PAST, PRODUCTION_PAST, capacity_factor_past, capacity_2015_EVN
 
 from data_PDP7A import (PDP7A_annex1,
                         capacities_PDP7A,
@@ -44,7 +44,7 @@ def fill_in(serie):
 
     Approximately because cast as integer
     """
-    capacity_2015 = capacity_past.cumsum().loc[2015, serie.name]
+    capacity_2015 = CAPACITY_PAST.cumsum().loc[2015, serie.name]
     a = (serie[2020] - capacity_2015) / 15
     b = (serie[2025] - serie[2020]) / 15
     c = (serie[2030] - serie[2025]) / 15
@@ -76,10 +76,10 @@ additions["Import"] = fill_in(capacities_PDP7A.Import)
 
 # 1974 - 2015 capacity additions and cleanup
 
-additions = pd.concat([capacity_past, additions])
+additions = pd.concat([CAPACITY_PAST, additions])
 
-# FIXME: plant_type + ["PumpedStorage", "Import"] is technologies
-additions = additions[plant_type + ["PumpedStorage", "Import"]].fillna(0)
+# FIXME: PLANT_TYPE + ["PumpedStorage", "Import"] is technologies
+additions = additions[PLANT_TYPE + ["PumpedStorage", "Import"]].fillna(0)
 
 # 2031 - 2050 scenario definition
 
@@ -149,29 +149,29 @@ def extend(serie, endpoint, newname, past=capacity_factor_past, future=capacity_
 
 # %% Electricity production
 
-capacityfactor = pd.DataFrame()
+CAPACITY_FACTOR = pd.DataFrame()
 
-capacityfactor["Coal"] = extend("Coal", 0.6, "Coal")
-capacityfactor["Gas"] = extend("Gas", 0.6, "Gas")
-capacityfactor["Oil"] = 0.25
-capacityfactor["BigHydro"] = extend("BigHydro", 0.4, "BigHydro")
-capacityfactor["SmallHydro"] = extend("SmallHydro", 0.6, "SmallHydro")
-capacityfactor["Biomass"] = extend("Renewable", 0.3, "Biomass")
-capacityfactor["Wind"] = extend("Renewable", 0.3, "Wind")
-capacityfactor["Solar"] = extend("Renewable", 0.23, "Solar")
+CAPACITY_FACTOR["Coal"] = extend("Coal", 0.6, "Coal")
+CAPACITY_FACTOR["Gas"] = extend("Gas", 0.6, "Gas")
+CAPACITY_FACTOR["Oil"] = 0.25
+CAPACITY_FACTOR["BigHydro"] = extend("BigHydro", 0.4, "BigHydro")
+CAPACITY_FACTOR["SmallHydro"] = extend("SmallHydro", 0.6, "SmallHydro")
+CAPACITY_FACTOR["Biomass"] = extend("Renewable", 0.3, "Biomass")
+CAPACITY_FACTOR["Wind"] = extend("Renewable", 0.3, "Wind")
+CAPACITY_FACTOR["Solar"] = extend("Renewable", 0.23, "Solar")
 
-capacityfactor["CoalCCS"] = capacityfactor["Coal"]
-capacityfactor["GasCCS"] = capacityfactor["Gas"]
-capacityfactor["BioCCS"] = capacityfactor["Biomass"]
+CAPACITY_FACTOR["CoalCCS"] = CAPACITY_FACTOR["Coal"]
+CAPACITY_FACTOR["GasCCS"] = CAPACITY_FACTOR["Gas"]
+CAPACITY_FACTOR["BioCCS"] = CAPACITY_FACTOR["Biomass"]
 
-capacityfactor = capacityfactor.where(capacityfactor < 1)
+CAPACITY_FACTOR = CAPACITY_FACTOR.where(CAPACITY_FACTOR < 1)
 
-net_import = extend("Import", 7000, "Import", production_past, production_PDP7A)
+net_import = extend("Import", 7000, "Import", PRODUCTION_PAST, production_PDP7A)
 
 
 # %% Main statement
 
-baseline = Plan(additions, retirement, capacityfactor, net_import)
+baseline = Plan(additions, retirement, CAPACITY_FACTOR, net_import)
 baseline.__doc__ = "Baseline - PDP7A extended"
 
 if __name__ == '__main__':
@@ -223,12 +223,12 @@ capacity_closed = pd.Series(comparison.iloc[0] - comparison.iloc[1], name="Diff 
 
 comparison = comparison.append(capacity_closed)
 
-capacity_old = pd.Series(capacity_past.cumsum().loc[1980], name="Installed before 1980")
+capacity_old = pd.Series(CAPACITY_PAST.cumsum().loc[1980], name="Installed before 1980")
 
 comparison = comparison.append(capacity_old)
 
 show("Coherence of 2015 Generation capacity numbers")
-show(comparison[plant_type])
+show(comparison[PLANT_TYPE])
 
 show("""
 Some coal, gas, oil and hydro capacities listed in the EVN report historical table are
@@ -249,7 +249,7 @@ if VERBOSE:
     ax.axvline(2015, color="k")
 
 
-#b = production_past[plant_type].astype("int64")
+#b = PRODUCTION_PAST[PLANT_TYPE].astype("int64")
 #
 #show("Past - Electricity production (GWh)")
 #show(b)

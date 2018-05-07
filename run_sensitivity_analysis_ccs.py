@@ -16,13 +16,13 @@ from plan_with_ccs import withCCS
 from parameter_reference import reference
 from Run import RunPair
 
-HIDISCOUNT = reference._replace(discount_rate=.08)
+HIDISCOUNT = reference._replace(DISCOUNT_RATE=.08)
 HIDISCOUNT.__doc__ = "Discount 8%"
 
-LODISCOUNT = reference._replace(discount_rate=.04)
+LODISCOUNT = reference._replace(DISCOUNT_RATE=.04)
 LODISCOUNT.__doc__ = "Discount 4%"
 
-HICARBONPRICE = reference._replace(carbon_price=reference.carbon_price * 1.75)
+HICARBONPRICE = reference._replace(CARBON_PRICE=reference.CARBON_PRICE * 1.75)
 HICARBONPRICE.__doc__ = "175% carbon price"
 
 # Coal prices on liberalized markets have been volaile.

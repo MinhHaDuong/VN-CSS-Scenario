@@ -19,7 +19,7 @@ import sys
 from Plan import Plan
 from plan_baseline import (additions as baseline_additions,
                            retirement as baseline_retirement,
-                           capacityfactor, net_import)
+                           CAPACITY_FACTOR, net_import)
 
 # %%
 
@@ -33,7 +33,7 @@ retirement["Gas"] = retirement["Coal"]
 
 #%% Main statement
 
-moreGas = Plan(additions, retirement, capacityfactor, net_import)
+moreGas = Plan(additions, retirement, CAPACITY_FACTOR, net_import)
 moreGas.__doc__ = "Install as much gas power new capacity as coal power new capacity."
 
 if __name__ == '__main__':

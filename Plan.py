@@ -10,22 +10,22 @@ import hashlib
 
 import matplotlib.pyplot as plt
 
-from init import plant_type, sources, technologies, start_year, end_year
+from init import PLANT_TYPE, SOURCES, technologies, START_YEAR, END_YEAR
 from init import GWh, TWh, MW, GW
 
 # %%
 
 
 class Plan(namedtuple('Plan',
-                           ['additions', 'retirement', 'capacity_factor', 'net_import',
-                            'capacities', 'production'])):
+                      ['additions', 'retirement', 'capacity_factor', 'net_import',
+                       'capacities', 'production'])):
     """A power development plan."""
 
     def __new__(cls, additions, retirement, capacity_factor, net_import):
         capacities = (additions - retirement).cumsum()
         production = capacities * capacity_factor * 8760 / 1000
         production["Import"] = net_import
-        production = production[sources].fillna(0)
+        production = production[SOURCES].fillna(0)
         production["Total"] = production.sum(axis=1)
         return super().__new__(cls, additions, retirement, capacity_factor, net_import,
                                capacities, production)
@@ -40,13 +40,13 @@ class Plan(namedtuple('Plan',
 
     def summary(self):
         """Summary of a power development program, time series shown for key years only."""
-        milestones = [start_year, 2020, 2025, 2030, 2040, end_year]
+        milestones = [START_YEAR, 2020, 2025, 2030, 2040, END_YEAR]
         return (
             str(self) + '\n\n'
             + "Annual generation capacity addition by fuel type (MW)\n"
             + str(self.additions.loc[milestones, technologies].round()) + '\n\n'
             + "Old capacity retirement by fuel type (MW)\n"
-            + str(self.retirement.loc[milestones, plant_type].round()) + '\n\n'
+            + str(self.retirement.loc[milestones, PLANT_TYPE].round()) + '\n\n'
             + "Generation capacity by fuel type (MW)\n"
             + str(self.capacities.loc[milestones, technologies].round()) + '\n\n'
             + "Electricity production (GWh)\n"
@@ -59,24 +59,24 @@ class Plan(namedtuple('Plan',
         print(self.summary())
 
     def plot_additions(self, ax, legend=True):
-        self.additions[sources].plot(ax=ax, title="Added capacity (MW)",
+        self.additions[SOURCES].plot(ax=ax, title="Added capacity (MW)",
                                      linestyle='', marker='o', legend=legend)
         ax.axvline(2015, color="k")
         ax.axvline(2030, color="k")
 
     def plot_retirement(self, ax, legend=True):
-        self.retirement[sources].plot(ax=ax, title="Retired capacity (MW)", legend=legend)
+        self.retirement[SOURCES].plot(ax=ax, title="Retired capacity (MW)", legend=legend)
         ax.axvline(2015, color="k")
         ax.axvline(2030, color="k")
 
     def plot_capacity_mix(self, ax, legend=True):
-        mix = (self.capacities[sources] * MW / GW)
+        mix = (self.capacities[SOURCES] * MW / GW)
         mix.plot(ax=ax, title="Total generation capacity (GW)", legend=legend)
         ax.axvline(2015, color="k")
         ax.axvline(2030, color="k")
 
     def plot_production_mix(self, ax, legend=True):
-        mix = (self.production[sources] * GWh / TWh)
+        mix = (self.production[SOURCES] * GWh / TWh)
         mix.plot(ax=ax, title="Electricity production (TWh)", legend=legend)
         ax.axvline(2015, color="k")
         ax.axvline(2030, color="k")

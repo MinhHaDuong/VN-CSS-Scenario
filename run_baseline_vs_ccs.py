@@ -17,10 +17,5 @@ from Run import RunPair
 
 if __name__ == '__main__':
     if (len(sys.argv) == 2) and (sys.argv[1] == "summarize"):
-        print("""
-******************************************
-***             Results                ***
-******************************************
-""")
         PAIR = RunPair(baseline, withCCS, reference)
         print(PAIR.summary(["Baseline", "High CCS", "difference"]))

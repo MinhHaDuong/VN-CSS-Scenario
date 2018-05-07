@@ -54,7 +54,8 @@ confidence=
 
 #bad-continuation:  see pylint bug report https://github.com/PyCQA/pylint/issues/747 and 638 about where the closing ) should go
 #no-name-in-module:  the  natu/units  module is too smart, it loads units dynamically
-disable=bad-continuation,no-name-in-module,invalid-name
+#disable=bad-continuation,no-name-in-module,invalid-name
+disable=bad-continuation,no-name-in-module
 
 # Enable the message, report, category or checker with the given id(s). You can
 # either give multiple identifier separated by comma (,) or put this option
@@ -125,12 +126,12 @@ class-rgx=[A-Z_][a-zA-Z0-9]+$
 
 
 # Naming hint for constant names
-# const-name-hint=(([A-Z_][A-Z0-9_]*)|(__.*__))$
-const-name-hint=(([A-Z_][A-Z0-9_]*)|([a-z][a-z0-9_]{2,30})|(_[a-z0-9_]*))$
+const-name-hint=(([A-Z_][A-Z0-9_]*)|(__.*__))$
+# const-name-hint=(([A-Z_][A-Z0-9_]*)|([a-z][a-z0-9_]{2,30})|(_[a-z0-9_]*))$
 
 # Regular expression matching correct constant names
-# const-rgx=(([A-Z_][A-Z0-9_]*)|(__.*__))$
-const-rgx=(([A-Z_][A-Z0-9_]*)|([a-z][a-z0-9_]{2,30})|(_[a-z0-9_]*))$
+const-rgx=(([A-Z_][A-Z0-9_]*)|(__.*__))$
+# const-rgx=(([A-Z_][A-Z0-9_]*)|([a-z][a-z0-9_]{2,30})|(_[a-z0-9_]*))$
 
 
 # Minimum line length for functions/classes that require docstrings, shorter
@@ -144,7 +145,7 @@ function-name-hint=(([a-z][a-z0-9_]{2,30})|(_[a-z0-9_]*))$
 function-rgx=(([a-z][a-z0-9_]{2,30})|(_[a-z0-9_]*))$
 
 # Good variable names which should always be accepted, separated by a comma
-good-names=i,j,k,ex,Run,_,df
+good-names=i,j,k,ex,Run,_,df,s,ax,fig,kW,kWh,MWh,GWh,TWh,Btu,MBtu,Mkal,g,kg,t,kt,Mt,Gt
 
 # Include a hint for the correct naming format with invalid-name
 include-naming-hint=no

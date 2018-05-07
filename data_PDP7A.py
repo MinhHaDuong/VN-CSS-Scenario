@@ -22,7 +22,7 @@ PDP7A list of power plant projects include some designated as '* Backup if renew
 are not build.'
 """
 
-from init import pd, show, plant_type, Mt, GWh, g, kWh
+from init import pd, show, PLANT_TYPE, Mt, GWh, g, kWh
 
 # %%  List of planned new plants
 
@@ -73,7 +73,7 @@ capacities_PDP7A["BioCCS"] = 0
 show("""
 PDP7A capacity objectives by fuel type (GW)
 """)
-show(capacities_PDP7A[plant_type + ["Nuclear", "Import", "PumpedStorage"]])
+show(capacities_PDP7A[PLANT_TYPE + ["Nuclear", "Import", "PumpedStorage"]])
 
 # %% Production objectives
 
@@ -87,7 +87,7 @@ production_PDP7A["BioCCS"] = 0
 show("""
 PDP7A power generation objectives by fuel type (GWh)
 """)
-show(production_PDP7A[plant_type + ["Nuclear", "Import"]])
+show(production_PDP7A[PLANT_TYPE + ["Nuclear", "Import"]])
 
 # %% Implicit capacity factors
 
